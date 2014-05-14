@@ -61,6 +61,8 @@ Blockly.Block = function(workspace, prototypeName) {
   this.inputsInline = false;
   this.rendered = false;
   this.collapsed = false;
+  //Layer
+  this.layerLabel = '';
   this.disabled = false;
   this.tooltip = '';
   this.contextMenu = true;
@@ -243,6 +245,11 @@ Blockly.Block.prototype.select = function() {
   Blockly.selected = this;
   this.svg_.addSelect();
   Blockly.fireUiEvent(this.workspace.getCanvas(), 'blocklySelectChange');
+  //Layer
+  var xmlBlock = Blockly.Xml.blockToDom_(this);
+  console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
+  //for layer debuging
+  console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
 };
 
 /**
@@ -687,6 +694,17 @@ Blockly.Block.prototype.showContextMenu_ = function(xy) {
     block.showHelp_();
   };
   options.push(helpOption);
+
+  // Layer: Option to group block to layer.
+  var layerOption = {enabled: 1};
+  layerOption.text = "Layer";
+  layerOption.callback = function(){
+    var layerName=prompt("Please enter the Layer Label","Layer1");
+    if (layerName!=null){
+      block.setLayerLabel(layerName);
+    }
+  };
+  options.push(layerOption);
 
   // Allow the block to add or modify options.
   if (this.customContextMenu && !block.isInFlyout) {
@@ -1315,6 +1333,29 @@ Blockly.Block.prototype.getInheritedDisabled = function() {
       return false;
     } else if (block.disabled) {
       return true;
+    }
+  }
+};
+
+/**Layer
+ * Set the layerLabel to this block
+ * @param {string} name the layerLabel
+ */
+Blockly.Block.prototype.setLayerLabel = function(layerName) {
+  console.log("setLayerLabel to "+layerName)
+  this.layerLabel = layerName;
+  this.workspace.fireChangeEvent();
+  for (var x = 0, input; input = this.inputList[x]; x++) {//?
+    if (input.connection) {
+      // This is a connection.
+      var child = input.connection.targetBlock();
+      if (child) {
+        console.log("child.layerLabel is "+child.id)
+        if (1) {
+          child.setLayerLabel(layerName);
+          console.log("child.layerLabel is "+child.layerLabel)
+        }
+      }
     }
   }
 };

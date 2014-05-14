@@ -117,6 +117,9 @@ Blockly.Xml.blockToDom_ = function(block) {
   if (block.collapsed) {
     element.setAttribute('collapsed', true);
   }
+  if (block.layerLabel) {//Layer
+    element.setAttribute('layerlabel', block.layerLabel);
+  }
   if (block.disabled) {
     element.setAttribute('disabled', true);
   }
@@ -323,6 +326,10 @@ Blockly.Xml.domToBlock_ = function(workspace, xmlBlock) {
   var collapsed = xmlBlock.getAttribute('collapsed');
   if (collapsed) {
     block.setCollapsed(collapsed == 'true');
+  }
+  var layerLabel = xmlBlock.getAttribute('layerlabel');//Layer
+  if (layerLabel) {
+    block.setLayerLabel(layerLabel);
   }
   var disabled = xmlBlock.getAttribute('disabled');
   if (disabled) {
