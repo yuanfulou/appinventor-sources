@@ -10,6 +10,7 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
+import com.google.appinventor.client.boxes.LayerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
@@ -482,6 +483,11 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     // Set the palette box's content.
     PaletteBox paletteBox = PaletteBox.getPaletteBox();
     paletteBox.setContent(palettePanel);
+
+    // hide layerbox
+    LayerBox layerBox = LayerBox.getLayerBox();
+    layerBox.clear();
+    layerBox.setVisible(false);
 
     // Update the source structure explorer with the tree of this form's components.
     sourceStructureExplorer.updateTree(form.buildComponentsTree(),

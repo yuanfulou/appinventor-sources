@@ -9,6 +9,7 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
+import com.google.appinventor.client.boxes.LayerBox;
 import com.google.appinventor.client.boxes.MessagesOutputBox;
 import com.google.appinventor.client.boxes.OdeLogBox;
 import com.google.appinventor.client.boxes.PaletteBox;
@@ -606,6 +607,7 @@ public class Ode implements EntryPoint {
     structureAndAssets.add(SourceStructureBox.getSourceStructureBox());
     structureAndAssets.add(BlockSelectorBox.getBlockSelectorBox());  // initially not visible
     structureAndAssets.add(AssetListBox.getAssetListBox());
+    structureAndAssets.add(LayerBox.getLayerBox());
     workColumns.add(structureAndAssets);
 
     Box propertiesbox = PropertiesBox.getPropertiesBox();

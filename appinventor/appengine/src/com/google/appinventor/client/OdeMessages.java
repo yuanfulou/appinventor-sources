@@ -300,6 +300,12 @@ public interface OdeMessages extends Messages {
   @Description("Caption for asset list box.")
   String assetListBoxCaption();
 
+  // Used in boxes/LayerBox.java
+
+  @DefaultMessage("Layer")
+  @Description("Caption for layer box.")
+  String layerBoxCaption();
+
   // Used in boxes/MessagesOutputBox.java
 
   @DefaultMessage("Messages")

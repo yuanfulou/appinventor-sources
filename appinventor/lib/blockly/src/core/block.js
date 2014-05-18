@@ -32,6 +32,7 @@ goog.require('Blockly.ContextMenu');
 goog.require('Blockly.ErrorIcon');
 goog.require('Blockly.Input');
 goog.require('Blockly.Language');
+goog.require('Blockly.Layer');
 goog.require('Blockly.Mutator');
 goog.require('Blockly.Warning');
 goog.require('Blockly.Workspace');
@@ -248,6 +249,7 @@ Blockly.Block.prototype.select = function() {
   //Layer
   var xmlBlock = Blockly.Xml.blockToDom_(this);
   console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
+  Blockly.GetLayerList();
   //for layer debuging
   console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
 };

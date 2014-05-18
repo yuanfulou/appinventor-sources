@@ -10,6 +10,7 @@ import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
+import com.google.appinventor.client.boxes.LayerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.simple.SimpleComponentDatabase;
@@ -230,7 +231,11 @@ public final class YaBlocksEditor extends FileEditor
       paletteBox.setContent(palettePanel);
     }
     PaletteBox.getPaletteBox().setVisible(false);
-    
+
+    // show layer box at block view
+    LayerBox layerBox = LayerBox.getLayerBox();
+    layerBox.setVisible(true);
+
     // Update the source structure explorer with the tree of this form's components.
     MockForm form = getForm();
     if (form != null) {
