@@ -63,7 +63,7 @@ Blockly.Block = function(workspace, prototypeName) {
   this.rendered = false;
   this.collapsed = false;
   //Layer
-  this.layerLabel = '';
+  this.layerLabel = null;
   this.disabled = false;
   this.tooltip = '';
   this.contextMenu = true;
@@ -247,9 +247,11 @@ Blockly.Block.prototype.select = function() {
   this.svg_.addSelect();
   Blockly.fireUiEvent(this.workspace.getCanvas(), 'blocklySelectChange');
   //Layer
-  var xmlBlock = Blockly.Xml.blockToDom_(this);
-  console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
-  Blockly.GetLayerList();
+  //this.rendered=false
+  //this.setCollapsed(true);
+  //var xmlBlock = Blockly.Xml.blockToDom_(this);
+  //console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
+  Blockly.SetLayerList();
   //for layer debuging
   console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
 };
@@ -701,10 +703,16 @@ Blockly.Block.prototype.showContextMenu_ = function(xy) {
   var layerOption = {enabled: 1};
   layerOption.text = "Layer";
   layerOption.callback = function(){
-    var layerName=prompt("Please enter the Layer Label","Layer1");
+    if(block.layerLabel!=null){
+      var layerName=prompt("Please enter the Layer Label",block.layerLabel);
+    }
+    else{
+      var layerName=prompt("Please enter the Layer Label","Layer1");
+    }
     if (layerName!=null){
       block.setLayerLabel(layerName);
     }
+    Blockly.SetLayerList();
   };
   options.push(layerOption);
 
@@ -1344,7 +1352,7 @@ Blockly.Block.prototype.getInheritedDisabled = function() {
  * @param {string} name the layerLabel
  */
 Blockly.Block.prototype.setLayerLabel = function(layerName) {
-  console.log("setLayerLabel to "+layerName)
+  //console.log("setLayerLabel to "+layerName)
   this.layerLabel = layerName;
   this.workspace.fireChangeEvent();
   for (var x = 0, input; input = this.inputList[x]; x++) {//?
@@ -1352,10 +1360,10 @@ Blockly.Block.prototype.setLayerLabel = function(layerName) {
       // This is a connection.
       var child = input.connection.targetBlock();
       if (child) {
-        console.log("child.layerLabel is "+child.id)
+        //console.log("child.layerLabel is "+child.id)
         if (1) {
           child.setLayerLabel(layerName);
-          console.log("child.layerLabel is "+child.layerLabel)
+          //console.log("child.layerLabel is "+child.layerLabel)
         }
       }
     }

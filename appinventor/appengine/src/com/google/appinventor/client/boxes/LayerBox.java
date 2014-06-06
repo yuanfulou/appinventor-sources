@@ -13,10 +13,8 @@ import com.google.appinventor.client.widgets.boxes.Box;
  *
  */
 public final class LayerBox extends Box {
-
   // Singleton layer box instance
   private static final LayerBox INSTANCE = new LayerBox();
-
   /**
    * Return the layer box.
    *
@@ -34,6 +32,5 @@ public final class LayerBox extends Box {
         300,    // height
         false,  // minimizable
         false); // removable
-
   }
 }

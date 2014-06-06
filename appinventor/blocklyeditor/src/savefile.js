@@ -23,7 +23,7 @@ Blockly.SaveFile.load = function(blocksContent) {
  * get is called prior to writing out. Original ai2 apps had no versions in them
  *   so now we write out every time
  *
-*/
+ */
 Blockly.SaveFile.get = function() {  
   var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
   var element = goog.dom.createElement('yacodeblocks');

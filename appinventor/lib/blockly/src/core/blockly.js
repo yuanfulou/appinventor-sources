@@ -42,6 +42,8 @@ goog.require('Blockly.FieldTextInput');
 goog.require('Blockly.FieldVariable');
 goog.require('Blockly.Generator');
 goog.require('Blockly.inject');
+//Layer
+goog.require('Blockly.Layer');
 goog.require('Blockly.Procedures');
 //goog.require('Blockly.Toolbox');
 goog.require('Blockly.TypeBlock');
@@ -547,6 +549,13 @@ Blockly.showContextMenu_ = function(xy) {
     return block.category;
   }
 
+  /**LAYER YFLOU
+   * 
+   */
+  function comparisonLayerLabel(block){
+    return block.layerLabel;
+  }
+
   /**
    * Function used to sort blocks by Category.
    * @param {!Blockly.Block} first block to be compared
@@ -556,7 +565,27 @@ Blockly.showContextMenu_ = function(xy) {
   function sortByCategory(a,b) {
     var comparatorA = comparisonName(a).toLowerCase();
     var comparatorB = comparisonName(b).toLowerCase();
+    if (comparatorA < comparatorB) return -1;
+    else if (comparatorA > comparatorB) return +1;
+    else return 0;
+  }
 
+  /**LAYER YFLOU
+   * 
+   */
+  function sortByLayerLabel(a,b){
+    if(comparisonLayerLabel(a)){
+      var comparatorA = comparisonLayerLabel(a);
+    }
+    else{
+      var comparatorA = "Z"
+    }
+    if(comparisonLayerLabel(b)){
+      var comparatorB = comparisonLayerLabel(b);
+    }
+    else{
+      var comparatorB = "Z"
+    }
     if (comparatorA < comparatorB) return -1;
     else if (comparatorA > comparatorB) return +1;
     else return 0;
@@ -570,6 +599,33 @@ Blockly.showContextMenu_ = function(xy) {
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
       topblocks.sort(sortByCategory);
     }
+    //(LAYER) If the blocks are arranged by LayerLabel, sort the array
+    if (Blockly.workspace_arranged_type ==="SortByLayer"){
+      topblocks.sort(sortByLayerLabel);
+    }
+    if (Blockly.workspace_arranged_type ==="ShowLayer"){//sort by cat first
+      topblocks.sort(sortByLayerLabel);
+      //console.log(layertoshow.toString());
+      var k=0
+      for (var i = 0; i < layertoshow.length; i++) {
+        for (var j = 0; j < topblocks.length; j++) {
+          if(layertoshow[i]===topblocks[j].layerLabel){
+            topblocks[j].setCollapsed(false);
+            var temp=topblocks[j];
+            topblocks[j]=topblocks[k];
+            topblocks[k]=temp;
+            k++;
+          }
+          else{
+            topblocks[j].setCollapsed(true);
+          }
+        }
+      }
+      /*for (var i = 0; i < topblocks.length; i++) {
+        console.log(topblocks[i].layerLabel);
+      }*/
+    }
+    //YFLOU
     var metrics = Blockly.mainWorkspace.getMetrics();
     var viewLeft = metrics.viewLeft + 5;
     var viewTop = metrics.viewTop + 5;
@@ -639,6 +695,79 @@ Blockly.showContextMenu_ = function(xy) {
     else if (Blockly.workspace_arranged_latest_position === Blockly.BLKS_VERTICAL)
       arrangeOptionV.callback();
   }
+
+  // Sort by Layer.
+  var sortOptionLay = {enabled: (Blockly.workspace_arranged_type !== "SortByLayer")};
+  sortOptionLay.text = "Sort by Layer";
+  sortOptionLay.callback = function() {
+    Blockly.workspace_arranged_type = "SortByLayer";
+    rearrangeWorkspace();
+  };
+  options.push(sortOptionLay);
+
+  Blockly.dosortByLayerLabel = function() {
+    Blockly.workspace_arranged_type = "SortByLayer";
+    rearrangeWorkspace();
+  };
+  
+  // Show by Layer.
+  var layertoshow=[];
+  Blockly.doshowLayerBlock = function() {
+    Blockly.workspace_arranged_type = "ShowLayer";
+    var temp=prompt("Please enter the Layer Label to show(in format: 'Layer1, Layer2')");
+    layertoshow=temp.split(", ");
+    //console.log(layertoshow.toString());
+    rearrangeWorkspace();
+  };
+
+  var showLayerBlock = {enabled: 1};
+  showLayerBlock.text = "Show Blocks By Layer";
+  showLayerBlock.callback = function() {
+    Blockly.doshowLayerBlock();
+  };
+  options.push(showLayerBlock);
+
+  //collapse Layer Blocks
+  var collapseLayerBlock = {enabled: 1};
+  collapseLayerBlock.text = "Collapse Blocks By Layer";
+  collapseLayerBlock.callback = function() {
+    var temp=prompt("Please enter the Layer Label to COLLAPSE(in format: 'Layer1, Layer2')"+Blockly.GetLayerList());
+    if(temp!=null)Blockly.CollapseByLayer(1,temp);
+  };
+  options.push(collapseLayerBlock);
+  //expand Layer Blocks
+  var expandLayerBlock = {enabled: 1};
+  expandLayerBlock.text = "Expand Blocks By Layer";
+  expandLayerBlock.callback = function() {
+    var temp=prompt("Please enter the Layer Label to EXPAND(in format: 'Layer1, Layer2')"+Blockly.GetLayerList());
+    if(temp!=null)Blockly.CollapseByLayer(0,temp);
+  };
+  options.push(expandLayerBlock);
+  //disable Layer Blocks
+  var disableLayerBlock = {enabled: 1};
+  disableLayerBlock.text = "Disable Blocks By Layer";
+  disableLayerBlock.callback = function() {
+    var temp=prompt("Please enter the Layer Label to DISABLE(in format: 'Layer1, Layer2')"+Blockly.GetLayerList());
+    if(temp!=null)Blockly.DisableByLayer(1,temp);
+  };
+  options.push(disableLayerBlock);
+
+  var disableLayerBlock = {enabled: 1};
+  disableLayerBlock.text = "Enable Blocks By Layer";
+  disableLayerBlock.callback = function() {
+    var temp=prompt("Please enter the Layer Label to ENABLE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList());
+    if(temp!=null)Blockly.DisableByLayer(0,temp);
+  };
+  options.push(disableLayerBlock);
+
+
+  var TESTOP = {enabled: 1};
+  TESTOP.text = "TESTOP";
+  TESTOP.callback = function() {
+    console.log("TESTOP");
+  };
+  options.push(TESTOP);
+  //YFLOU
 
   // Option to get help.
   var helpOption = {enabled: false};

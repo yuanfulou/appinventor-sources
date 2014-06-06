@@ -232,10 +232,6 @@ public final class YaBlocksEditor extends FileEditor
     }
     PaletteBox.getPaletteBox().setVisible(false);
 
-    // show layer box at block view
-    LayerBox layerBox = LayerBox.getLayerBox();
-    layerBox.setVisible(true);
-
     // Update the source structure explorer with the tree of this form's components.
     MockForm form = getForm();
     if (form != null) {
@@ -250,6 +246,8 @@ public final class YaBlocksEditor extends FileEditor
       Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
       BlockSelectorBox.getBlockSelectorBox().setVisible(true);
       AssetListBox.getAssetListBox().setVisible(true);
+      // show layer box at block view
+      LayerBox.getLayerBox().setVisible(true);
       hideComponentBlocks();
     } else {
       OdeLog.wlog("Can't get form editor for blocks: " + getFileId());

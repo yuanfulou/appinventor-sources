@@ -117,7 +117,7 @@ Blockly.Xml.blockToDom_ = function(block) {
   if (block.collapsed) {
     element.setAttribute('collapsed', true);
   }
-  if (block.layerLabel) {//Layer
+  if (block.layerLabel!=null) {//Layer
     element.setAttribute('layerlabel', block.layerLabel);
   }
   if (block.disabled) {
