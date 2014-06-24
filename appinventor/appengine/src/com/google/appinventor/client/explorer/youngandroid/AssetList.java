@@ -68,13 +68,6 @@ public class AssetList extends Composite implements ProjectChangeListener {
       }
     });
 
-    SimplePanel buttonPanel = new SimplePanel();
-    buttonPanel.setStyleName("ode-PanelButtons");
-    buttonPanel.add(addButton);
-
-    panel.add(buttonPanel);
-    panel.setCellHorizontalAlignment(buttonPanel, VerticalPanel.ALIGN_CENTER);
-
     initWidget(panel);
 
     assetList.addSelectionHandler(new SelectionHandler<TreeItem>() {

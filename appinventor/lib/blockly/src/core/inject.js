@@ -94,6 +94,7 @@ Blockly.parseOptions_ = function(options) {
   if (readOnly) {
     var hasCategories = false;
     var hasTrashcan = false;
+    //
     var hasCollapse = false;
     var tree = null;
   } else {

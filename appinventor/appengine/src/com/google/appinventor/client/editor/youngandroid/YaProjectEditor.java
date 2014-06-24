@@ -159,6 +159,7 @@ public final class YaProjectEditor extends ProjectEditor implements ProjectChang
     OdeLog.log("YaProjectEditor got onShow() for project " + projectId);
     
     AssetListBox.getAssetListBox().getAssetList().refreshAssetList(projectId);
+    //TestBox.getTestBox().getTest().refreshTest(projectId);
     
     DesignToolbar designToolbar = Ode.getInstance().getDesignToolbar();
     FileEditor selectedFileEditor = getSelectedFileEditor();

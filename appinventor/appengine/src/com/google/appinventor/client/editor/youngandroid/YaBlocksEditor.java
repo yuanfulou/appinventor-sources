@@ -10,7 +10,6 @@ import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
-import com.google.appinventor.client.boxes.LayerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.simple.SimpleComponentDatabase;
@@ -246,8 +245,6 @@ public final class YaBlocksEditor extends FileEditor
       Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
       BlockSelectorBox.getBlockSelectorBox().setVisible(true);
       AssetListBox.getAssetListBox().setVisible(true);
-      // show layer box at block view
-      LayerBox.getLayerBox().setVisible(true);
       hideComponentBlocks();
     } else {
       OdeLog.wlog("Can't get form editor for blocks: " + getFileId());

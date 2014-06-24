@@ -612,31 +612,45 @@ Blockly.showContextMenu_ = function(e) {
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
       topblocks.sort(sortByCategory);
     }
-    //(LAYER) If the blocks are arranged by LayerLabel, sort the array
-    if (Blockly.workspace_arranged_type ==="SortByLayer"){
+    //LAYER If the blocks are arranged by LayerLabel, sort the array
+    if (Blockly.workspace_arranged_type ==="SortByLayer"){//sort by LAYER
       topblocks.sort(sortByLayerLabel);
     }
-    if (Blockly.workspace_arranged_type ==="ShowLayer"){//sort by cat first
-      topblocks.sort(sortByLayerLabel);
-      //console.log(layertoshow.toString());
+    if (Blockly.workspace_arranged_type ==="ShowLayer"){//pick up the layertoshow
       var k=0
-      for (var i = 0; i < layertoshow.length; i++) {
-        for (var j = 0; j < topblocks.length; j++) {
+      for (var j = 0; j < topblocks.length; j++) {
+        for (var i = 0; i < layertoshow.length; i++) {
           if(layertoshow[i]===topblocks[j].layerLabel){
-            topblocks[j].setCollapsed(false);
+            topblocks[j].setCollapsed(false);//expand the target
             var temp=topblocks[j];
             topblocks[j]=topblocks[k];
             topblocks[k]=temp;
             k++;
+            break;
           }
           else{
             topblocks[j].setCollapsed(true);
           }
         }
       }
-      /*for (var i = 0; i < topblocks.length; i++) {
-        console.log(topblocks[i].layerLabel);
-      }*/
+    }
+    if (Blockly.workspace_arranged_type ==="ShowLayerwithother"){//pick up the layertoshow
+      var k=0
+      for (var j = 0; j < topblocks.length; j++) {
+        for (var i = 0; i < layertoshow.length; i++) {
+          if(layertoshow[i]===topblocks[j].layerLabel){
+            topblocks[j].setCollapsed(false);//expand the target
+            var temp=topblocks[j];
+            topblocks[j]=topblocks[k];
+            topblocks[k]=temp;
+            k++;
+            break;
+          }
+          else{
+            topblocks[j].setCollapsed(true);
+          }
+        }
+      }
     }
     //YFLOU
     var metrics = Blockly.mainWorkspace.getMetrics();
@@ -689,6 +703,34 @@ Blockly.showContextMenu_ = function(e) {
           break;
       }
     }
+    //LAYER push the unselected away
+    if(Blockly.workspace_arranged_type ==="ShowLayer"){
+      var metrics = Blockly.mainWorkspace.getMetrics();
+      var viewLeft = metrics.viewLeft + 5;
+      var viewTop = metrics.viewTop + 5;
+      var x = viewLeft;
+      var y = viewTop;
+      var wsRight = viewLeft + metrics.viewWidth;
+      var wsBottom = viewTop + metrics.viewHeight;
+      for (var i = 0, len = topblocks.length; i < len; i++) {
+        var blk = topblocks[i];
+        if(blk.collapsed_==true){//collapsed means not the layer to show
+          switch (layout) {
+            case Blockly.BLKS_HORIZONTAL:
+              if (x < wsRight) {
+                blk.moveBy(Math.abs(viewLeft) + Math.abs(wsRight) - x, 0);
+              }
+              break;
+            case Blockly.BLKS_VERTICAL:
+              if (y < wsBottom) {
+                blk.moveBy(0, Math.abs(viewTop) + Math.abs(wsBottom) - y);
+              }
+              break;
+          }
+        }
+      }
+    }
+    //YFLOU
   }
 
   // Sort by Category.
@@ -724,15 +766,22 @@ Blockly.showContextMenu_ = function(e) {
   };
   
   // Show by Layer.
-  var layertoshow=[];
+  var layertoshow;
   Blockly.doshowLayerBlock = function() {
     Blockly.workspace_arranged_type = "ShowLayer";
-    var temp=prompt("Please enter the Layer Label to show(in format: 'Layer1, Layer2')");
-    layertoshow=temp.split(", ");
-    //console.log(layertoshow.toString());
+    //var temp=prompt("Please enter the Layer Label to show(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
+    //layertoshow=inputlist;
+    layertoshow=Blockly.LayerView;
     rearrangeWorkspace();
   };
-
+  Blockly.doshowLayerBlockwithother = function() {
+    Blockly.workspace_arranged_type = "ShowLayerwithother";
+    //var temp=prompt("Please enter the Layer Label to show(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
+    //layertoshow=inputlist;
+    layertoshow=Blockly.LayerView;
+    rearrangeWorkspace();
+  };
+/*
   var showLayerBlock = {enabled: 1};
   showLayerBlock.text = "Show Blocks By Layer";
   showLayerBlock.callback = function() {
@@ -744,39 +793,52 @@ Blockly.showContextMenu_ = function(e) {
   var collapseLayerBlock = {enabled: 1};
   collapseLayerBlock.text = "Collapse Blocks By Layer";
   collapseLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to COLLAPSE(in format: 'Layer1, Layer2')"+Blockly.GetLayerList());
+    var temp=prompt("Please enter the Layer Label to COLLAPSE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
     if(temp!=null)Blockly.CollapseByLayer(1,temp);
   };
   options.push(collapseLayerBlock);
+
   //expand Layer Blocks
   var expandLayerBlock = {enabled: 1};
   expandLayerBlock.text = "Expand Blocks By Layer";
   expandLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to EXPAND(in format: 'Layer1, Layer2')"+Blockly.GetLayerList());
+    var temp=prompt("Please enter the Layer Label to EXPAND(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
     if(temp!=null)Blockly.CollapseByLayer(0,temp);
   };
   options.push(expandLayerBlock);
+
   //disable Layer Blocks
   var disableLayerBlock = {enabled: 1};
   disableLayerBlock.text = "Disable Blocks By Layer";
   disableLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to DISABLE(in format: 'Layer1, Layer2')"+Blockly.GetLayerList());
+    var temp=prompt("Please enter the Layer Label to DISABLE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
     if(temp!=null)Blockly.DisableByLayer(1,temp);
   };
   options.push(disableLayerBlock);
 
+  //enable Layer Blocks
   var disableLayerBlock = {enabled: 1};
   disableLayerBlock.text = "Enable Blocks By Layer";
   disableLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to ENABLE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList());
+    var temp=prompt("Please enter the Layer Label to ENABLE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
     if(temp!=null)Blockly.DisableByLayer(0,temp);
   };
   options.push(disableLayerBlock);
 
-
+  //duplicate by layer
+  var duplicateLayerBlock = {enabled: 1};
+  duplicateLayerBlock.text = "Duplicate Blocks By Layer";
+  duplicateLayerBlock.callback = function() {
+    var temp=prompt("Please enter the Layer Label to duplicate(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
+    if(temp!=null)Blockly.DuplicateByLayer(temp);
+  };
+  options.push(duplicateLayerBlock);
+*/
   var TESTOP = {enabled: 1};
   TESTOP.text = "TESTOP";
   TESTOP.callback = function() {
+    Blockly.LayerBoxInit();
+    //Blockly.ShowLayerBox();
     console.log("TESTOP");
   };
   options.push(TESTOP);

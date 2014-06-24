@@ -342,9 +342,16 @@ Blockly.Block.prototype.select = function() {
   //this.setCollapsed(true);
   //var xmlBlock = Blockly.Xml.blockToDom_(this);
   //console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
-  Blockly.SetLayerList();
+  /*document.getElementById("layerbox").style.position="absolute";
+  document.getElementById("layerbox").style.width="13%";
+  document.getElementById("layerbox").style.height="80%";
+  document.getElementById("layerbox").style.z-index="100";
+  document.getElementById("layerbox").style.left="85%";
+  document.getElementById("layerbox").style.top="1%";
+  document.getElementById("layerbox").style.background="#b0c4de";*/
   //for layer debuging
   console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
+  //console.log(Blockly.haslayerbox);
 };
 
 /**
@@ -860,7 +867,6 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
     if (layerName!=null){
       block.setLayerLabel(layerName);
     }
-    Blockly.SetLayerList();
   };
   options.push(layerOption);
 
@@ -1545,20 +1551,25 @@ Blockly.Block.prototype.getInheritedDisabled = function() {
  */
 Blockly.Block.prototype.setLayerLabel = function(layerName) {
   //console.log("setLayerLabel to "+layerName)
-  this.layerLabel = layerName;
+  if(layerName!=''){
+    this.layerLabel = layerName;
+  }
+  else{
+    this.layerLabel = null; 
+  }
   this.workspace.fireChangeEvent();
   for (var x = 0, input; input = this.inputList[x]; x++) {//?
     if (input.connection) {
-      // This is a connection.
       var child = input.connection.targetBlock();
       if (child) {
-        //console.log("child.layerLabel is "+child.id)
         if (1) {
           child.setLayerLabel(layerName);
-          //console.log("child.layerLabel is "+child.layerLabel)
         }
       }
     }
+  }
+  if(Blockly.haslayerbox){
+    Blockly.LayerBoxUpdate();
   }
 }
 

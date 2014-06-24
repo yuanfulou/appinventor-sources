@@ -484,11 +484,6 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     PaletteBox paletteBox = PaletteBox.getPaletteBox();
     paletteBox.setContent(palettePanel);
 
-    // hide layerbox
-    LayerBox layerBox = LayerBox.getLayerBox();
-    layerBox.clear();
-    layerBox.setVisible(false);
-
     // Update the source structure explorer with the tree of this form's components.
     sourceStructureExplorer.updateTree(form.buildComponentsTree(),
         selectedComponent.getSourceStructureExplorerItem());
