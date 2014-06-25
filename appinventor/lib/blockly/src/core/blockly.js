@@ -752,13 +752,13 @@ Blockly.showContextMenu_ = function(e) {
   }
 
   // Sort by Layer.
-  var sortOptionLay = {enabled: (Blockly.workspace_arranged_type !== "SortByLayer")};
+  /*var sortOptionLay = {enabled: (Blockly.workspace_arranged_type !== "SortByLayer")};
   sortOptionLay.text = "Sort by Layer";
   sortOptionLay.callback = function() {
     Blockly.workspace_arranged_type = "SortByLayer";
     rearrangeWorkspace();
   };
-  options.push(sortOptionLay);
+  options.push(sortOptionLay);*/
 
   Blockly.dosortByLayerLabel = function() {
     Blockly.workspace_arranged_type = "SortByLayer";
@@ -769,79 +769,21 @@ Blockly.showContextMenu_ = function(e) {
   var layertoshow;
   Blockly.doshowLayerBlock = function() {
     Blockly.workspace_arranged_type = "ShowLayer";
-    //var temp=prompt("Please enter the Layer Label to show(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    //layertoshow=inputlist;
     layertoshow=Blockly.LayerView;
     rearrangeWorkspace();
   };
   Blockly.doshowLayerBlockwithother = function() {
     Blockly.workspace_arranged_type = "ShowLayerwithother";
-    //var temp=prompt("Please enter the Layer Label to show(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    //layertoshow=inputlist;
     layertoshow=Blockly.LayerView;
     rearrangeWorkspace();
   };
-/*
-  var showLayerBlock = {enabled: 1};
-  showLayerBlock.text = "Show Blocks By Layer";
-  showLayerBlock.callback = function() {
-    Blockly.doshowLayerBlock();
-  };
-  options.push(showLayerBlock);
 
-  //collapse Layer Blocks
-  var collapseLayerBlock = {enabled: 1};
-  collapseLayerBlock.text = "Collapse Blocks By Layer";
-  collapseLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to COLLAPSE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    if(temp!=null)Blockly.CollapseByLayer(1,temp);
-  };
-  options.push(collapseLayerBlock);
-
-  //expand Layer Blocks
-  var expandLayerBlock = {enabled: 1};
-  expandLayerBlock.text = "Expand Blocks By Layer";
-  expandLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to EXPAND(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    if(temp!=null)Blockly.CollapseByLayer(0,temp);
-  };
-  options.push(expandLayerBlock);
-
-  //disable Layer Blocks
-  var disableLayerBlock = {enabled: 1};
-  disableLayerBlock.text = "Disable Blocks By Layer";
-  disableLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to DISABLE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    if(temp!=null)Blockly.DisableByLayer(1,temp);
-  };
-  options.push(disableLayerBlock);
-
-  //enable Layer Blocks
-  var disableLayerBlock = {enabled: 1};
-  disableLayerBlock.text = "Enable Blocks By Layer";
-  disableLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to ENABLE(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    if(temp!=null)Blockly.DisableByLayer(0,temp);
-  };
-  options.push(disableLayerBlock);
-
-  //duplicate by layer
-  var duplicateLayerBlock = {enabled: 1};
-  duplicateLayerBlock.text = "Duplicate Blocks By Layer";
-  duplicateLayerBlock.callback = function() {
-    var temp=prompt("Please enter the Layer Label to duplicate(in format: 'Layer1, Layer2')\nLayers: "+Blockly.GetLayerList().toString());
-    if(temp!=null)Blockly.DuplicateByLayer(temp);
-  };
-  options.push(duplicateLayerBlock);
-*/
-  var TESTOP = {enabled: 1};
-  TESTOP.text = "TESTOP";
-  TESTOP.callback = function() {
+  var LayerBoxOption = {enabled: (1)};
+  LayerBoxOption.text = "Show LayerBox";
+  LayerBoxOption.callback = function() {
     Blockly.LayerBoxInit();
-    //Blockly.ShowLayerBox();
-    console.log("TESTOP");
   };
-  options.push(TESTOP);
+  options.push(LayerBoxOption);
   //YFLOU
 
   // Option to get help.
