@@ -70,10 +70,14 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
           name = llist[i];
           var image = document.createElement("img");
           //use fuction to set src
-          //image.src = 'media/closedeye.gif';
-          image.src = Blockly.CheckView(name);
+          if(Blockly.LayerView.length==0){
+            image.src = 'media/eye.gif';
+          }
+          else{
+            image.src = Blockly.CheckView(name);
+          }
           x.appendChild(image);
-          x.setAttribute('selected', false);
+          x.setAttribute('selected', Blockly.CheckSelect(name));
           x.setAttribute('onclick', ('Blockly.LayerViewer(this.id);'));
         }
         else if(j == 1){//duplicate by layer
@@ -140,8 +144,17 @@ Blockly.CheckView = function (name){
   }
 }
 
+Blockly.CheckSelect = function (name){
+  if(Blockly.LayerView.indexOf(name)!=-1){//avoid repeat
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 Blockly.LayerBoxListerners = function (){//makes LB dragable
-  document.getElementById('layerbox').addEventListener('mousedown', mouseDown, false);
+  document.getElementById('layerboxtitle').addEventListener('mousedown', mouseDown, false);
   window.addEventListener('mouseup', mouseUp, false);
 }
 function mouseUp()
@@ -215,6 +228,7 @@ Blockly.LayerViewer = function(id){//dicide how to show by layerlabel
   Blockly.doshowLayerBlock();
   if(Blockly.LayerView.length == 0)
     Blockly.dosortByLayerLabel();
+  Blockly.LayerBoxUpdate();
 }
 
 Blockly.DuplicateByLayer = function(layer) {//duplicate by layer

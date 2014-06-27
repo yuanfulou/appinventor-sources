@@ -350,7 +350,7 @@ Blockly.Block.prototype.select = function() {
   document.getElementById("layerbox").style.top="1%";
   document.getElementById("layerbox").style.background="#b0c4de";*/
   //for layer debuging
-  console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
+  //console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
   //console.log(Blockly.haslayerbox);
 };
 
