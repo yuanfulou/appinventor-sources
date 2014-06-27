@@ -24,7 +24,6 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
     layerboxhide.src = 'media/min.gif';
     layerboxhide.type = 'image';
     layerboxhide.height = '12';
-    //layerboxhide.align = 'middle';
     layerboxtitle.appendChild(layerboxhide);
     layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
 
@@ -68,8 +67,11 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
         if(j == 0){//show by layer
           x.setAttribute('id', llist[i] + "show");
           x.setAttribute('name', llist[i]);
+          name = llist[i];
           var image = document.createElement("img");
-          image.src = 'media/closedeye.gif';
+          //use fuction to set src
+          //image.src = 'media/closedeye.gif';
+          image.src = Blockly.CheckView(name);
           x.appendChild(image);
           x.setAttribute('selected', false);
           x.setAttribute('onclick', ('Blockly.LayerViewer(this.id);'));
@@ -110,17 +112,32 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
   layerboxcontent = document.getElementById('layerboxcontent');
   layerboxcontent.appendChild(tbl);
 
-  var layergather = document.createElement('BUTTON');
-  var t = document.createTextNode('Gather');
-  layerboxcontent.appendChild(layergather);
-  layergather.appendChild(t);
-  layergather.setAttribute('onclick', ('Blockly.doshowLayerBlockwithother();'));
+  var layerother = document.createElement('BUTTON');
+  var t = document.createTextNode('other');
+  layerboxcontent.appendChild(layerother);
+  layerother.appendChild(t);
+  layerother.setAttribute('onclick', ('Blockly.doshowLayerBlockwithother();'));
 
   var sortbylayer = document.createElement('BUTTON');
   var t = document.createTextNode('SBL');
   layerboxcontent.appendChild(sortbylayer);
   sortbylayer.appendChild(t);
   sortbylayer.setAttribute('onclick', ('Blockly.dosortByLayerLabel();'));
+
+  var sortbyc = document.createElement('BUTTON');
+  var t = document.createTextNode('SBC');
+  layerboxcontent.appendChild(sortbyc);
+  sortbyc.appendChild(t);
+  sortbyc.setAttribute('onclick', ('Blockly.dosortByC();'));  
+}
+
+Blockly.CheckView = function (name){
+  if(Blockly.LayerView.indexOf(name)!=-1){//avoid repeat
+    return 'media/eye.gif';
+  }
+  else{
+    return 'media/closedeye.gif';
+  }
 }
 
 Blockly.LayerBoxListerners = function (){//makes LB dragable
@@ -152,58 +169,60 @@ Blockly.ShowLayerBoxContent = function() {//user can hide LBContent if they want
 }
 
 Blockly.EditLayerName = function(oldname) {//user can edit the name of layer by clicking it
-  var newlayername=prompt('Please enter the Layer Label','Layer1');
+  var newlayername = prompt('Please enter the Layer Label','Layer1');
   var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
   for (var i = 0; i < topblocks.length; i++) {
-    if(topblocks[i].layerLabel===oldname && newlayername!=null){
+    if(topblocks[i].layerLabel === oldname && newlayername != null){
       topblocks[i].setLayerLabel(newlayername);
-      console.log('LOL');
     }
   }
+  for(var i = 0; i<Blockly.LayerView.length; i++){
+      if(Blockly.LayerView[i] == oldname)
+        Blockly.LayerView.splice(i,1);
+    }
 }
 
 Blockly.LayerView = [];
 
 Blockly.LayerViewer = function(id){//dicide how to show by layerlabel
-  var x=document.getElementById(id);
-  selected=x.getAttribute("selected");
-  name=x.getAttribute("name");
+  var x =document.getElementById(id);
+  selected = x.getAttribute("selected");
+  name = x.getAttribute("name");
 
-  if(selected=="false"){
+  if(selected == "false"){
     x.setAttribute("selected",true);
-    x.innerHTML="";
+    x.innerHTML = "";
     var image = document.createElement("img");
-    image.src='media/eye.gif';
+    image.src = 'media/eye.gif';
     x.appendChild(image);
     
-    if(Blockly.LayerView.indexOf(name)==-1){//avoid repeat
+    if(Blockly.LayerView.indexOf(name) == -1){//avoid repeat
       Blockly.LayerView.push(name);
     }
-    console.log("!?");
   }
-  else if(selected=="true"){
+  else if(selected == "true"){
     x.setAttribute("selected",false);
-    x.innerHTML="";
+    x.innerHTML = "";
     var image = document.createElement("img");
-    image.src='media/closedeye.gif';
+    image.src = 'media/closedeye.gif';
     x.appendChild(image);
 
     for(var i = 0; i<Blockly.LayerView.length; i++){
-      if(Blockly.LayerView[i]==name)
+      if(Blockly.LayerView[i] == name)
         Blockly.LayerView.splice(i,1);
     }
   }
   Blockly.doshowLayerBlock();
-  if(Blockly.LayerView.length==0)
+  if(Blockly.LayerView.length == 0)
     Blockly.dosortByLayerLabel();
 }
 
 Blockly.DuplicateByLayer = function(layer) {//duplicate by layer
   var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
-  targetlayer=layer.split(', ');
+  targetlayer = layer.split(', ');
   for (var i = 0; i < targetlayer.length; i++) {
     for (var j = 0; j < topblocks.length; j++) {
-      if(targetlayer[i]===topblocks[j].layerLabel){
+      if(targetlayer[i] === topblocks[j].layerLabel){
         topblocks[j].duplicate_();
       }
     }
@@ -211,26 +230,26 @@ Blockly.DuplicateByLayer = function(layer) {//duplicate by layer
 }
 
 Blockly.DisableByLayer = function(id) {//disable by layer
-  var x=document.getElementById(id);
-  disabled=x.getAttribute("selected");
-  name=x.getAttribute("name");
+  var x = document.getElementById(id);
+  disabled = x.getAttribute("selected");
+  name = x.getAttribute("name");
   var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
-  targetlayer=name.split(', ');
+  targetlayer = name.split(', ');
   for (var i = 0; i < targetlayer.length; i++) {
     for (var j = 0; j < topblocks.length; j++) {
-      if(targetlayer[i]===topblocks[j].layerLabel && disabled=="false"){
+      if(targetlayer[i] === topblocks[j].layerLabel && disabled == "false"){
         x.setAttribute("selected",true);
-        x.innerHTML="";
+        x.innerHTML = "";
         var image = document.createElement("img");
-        image.src='media/green.gif';
+        image.src = 'media/green.gif';
         x.appendChild(image);
         topblocks[j].setDisabled(true);
       }
-      else if(targetlayer[i]===topblocks[j].layerLabel && disabled=="true"){
+      else if(targetlayer[i] === topblocks[j].layerLabel && disabled == "true"){
         x.setAttribute("selected",false);
-        x.innerHTML="";
+        x.innerHTML = "";
         var image = document.createElement("img");
-        image.src='media/red.gif';
+        image.src = 'media/red.gif';
         x.appendChild(image);
         topblocks[j].setDisabled(false);
       }
@@ -239,26 +258,26 @@ Blockly.DisableByLayer = function(id) {//disable by layer
 }
 
 Blockly.CollapseByLayer = function(id) {//collapse by layer
-  var x=document.getElementById(id);
-  collapsed=x.getAttribute("selected");
-  name=x.getAttribute("name");
+  var x = document.getElementById(id);
+  collapsed = x.getAttribute("selected");
+  name = x.getAttribute("name");
   var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
-  targetlayer=name.split(', ');
+  targetlayer = name.split(', ');
 	for (var i = 0; i < targetlayer.length; i++) {
     for (var j = 0; j < topblocks.length; j++) {
-      if(targetlayer[i]===topblocks[j].layerLabel && collapsed=="false"){
+      if(targetlayer[i] === topblocks[j].layerLabel && collapsed == "false"){
         x.setAttribute("selected",true);
-        x.innerHTML="";
+        x.innerHTML = "";
         var image = document.createElement("img");
-        image.src='media/max.gif';
+        image.src = 'media/max.gif';
         x.appendChild(image);
         topblocks[j].setCollapsed(true);
       }
-      else if(targetlayer[i]===topblocks[j].layerLabel && collapsed=="true"){
+      else if(targetlayer[i] === topblocks[j].layerLabel && collapsed == "true"){
         x.setAttribute("selected",false);
-        x.innerHTML="";
+        x.innerHTML = "";
         var image = document.createElement("img");
-        image.src='media/min.gif';
+        image.src = 'media/min.gif';
         x.appendChild(image);
       	topblocks[j].setCollapsed(false);
       }
@@ -268,10 +287,10 @@ Blockly.CollapseByLayer = function(id) {//collapse by layer
 
 Blockly.GetLayerList = function() {//return the layerlist
   var topBlocks = Blockly.mainWorkspace.getTopBlocks(false);
-  var llist=[]
+  var llist = []
   for (var i = 0; i < topBlocks.length; i++) {
-    if(topBlocks[i].layerLabel!=null){
-      if(llist.indexOf(topBlocks[i].layerLabel)==-1){
+    if(topBlocks[i].layerLabel != null){
+      if(llist.indexOf(topBlocks[i].layerLabel) == -1){
         llist.push(topBlocks[i].layerLabel);
       }
     }

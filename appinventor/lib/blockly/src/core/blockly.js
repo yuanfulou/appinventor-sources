@@ -591,13 +591,13 @@ Blockly.showContextMenu_ = function(e) {
       var comparatorA = comparisonLayerLabel(a);
     }
     else{
-      var comparatorA = "Z"
+      var comparatorA = "zzz"
     }
     if(comparisonLayerLabel(b)){
       var comparatorB = comparisonLayerLabel(b);
     }
     else{
-      var comparatorB = "Z"
+      var comparatorB = "zzz"
     }
     if (comparatorA < comparatorB) return -1;
     else if (comparatorA > comparatorB) return +1;
@@ -762,6 +762,11 @@ Blockly.showContextMenu_ = function(e) {
 
   Blockly.dosortByLayerLabel = function() {
     Blockly.workspace_arranged_type = "SortByLayer";
+    rearrangeWorkspace();
+  };
+
+  Blockly.dosortByC = function() {
+    Blockly.workspace_arranged_type = Blockly.BLKS_CATEGORY;
     rearrangeWorkspace();
   };
   
