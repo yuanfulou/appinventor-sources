@@ -31,7 +31,7 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
     layerboxcontent.id = 'layerboxcontent';
     layerbox.appendChild(layerboxcontent);
     layerboxcontent.style.visibility = 'visible';
-    layerboxcontent.setAttribute('style', 'background-color:rgba(102,153,0,0.3);');
+    layerboxcontent.setAttribute('style', 'background-color:rgb(202,220,169);');
     layerboxcontent.style.overflow = 'auto';
     Blockly.LayerBoxUpdate();
   }
