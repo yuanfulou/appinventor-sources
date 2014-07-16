@@ -12,7 +12,7 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
 
     var layerboxtitle = document.createElement('div');
     layerboxtitle.setAttribute('id', 'layerboxtitle');
-    layerboxtitle.innerHTML = 'LayerBox\t';
+    layerboxtitle.innerHTML = 'LayerBox';
     layerboxtitle.setAttribute('style', 'background:#8fc202;')
     layerbox.appendChild(layerboxtitle);
 
@@ -21,7 +21,24 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
     layerboxhide.type = 'image';
     layerboxhide.height = '12';
     layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
+    layerboxhide.setAttribute('style', 'position:absolute; left:50%; top:1%;');
     layerboxtitle.appendChild(layerboxhide);
+
+    var layerexport = document.createElement('input');
+    layerexport.src = 'media/export.png';
+    layerexport.type = 'image';
+    layerexport.height = '12';
+    //layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
+    layerexport.setAttribute('style', 'position:absolute; left:60%; top:1%;');
+    layerboxtitle.appendChild(layerexport);
+
+    var layerimport = document.createElement('input');
+    layerimport.src = 'media/import.png';
+    layerimport.type = 'image';
+    layerimport.height = '12';
+    //layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
+    layerimport.setAttribute('style', 'position:absolute; left:70%; top:1%;');
+    layerboxtitle.appendChild(layerimport);
 
     var layerboxcontent = document.createElement('div')
     layerboxcontent.id = 'layerboxcontent';
@@ -49,12 +66,21 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
     var tr = document.createElement('tr');
     if(llist[i]!=null){//won't create table if layerlabel is null
       var td = document.createElement('td');
+      var layercheckdiv = document.createElement('div');
+      var layercheck = document.createElement('input');
+      layercheck.setAttribute("type", "checkbox");
+      layercheckdiv.appendChild(layercheck);
+      td.appendChild(layercheckdiv);
+      tr.appendChild(td);
+
+      var td = document.createElement('td');
       var layerlist = document.createElement('div');
       layerlist.id = llist[i];
       layerlist.innerHTML = llist[i];
       layerlist.setAttribute('onclick', ('Blockly.EditLayerName(this.id);'));
       td.appendChild(layerlist);
       tr.appendChild(td);
+
       for(var j = 0; j<4; j++){
         var td = document.createElement('td');
         var x = document.createElement('div');
