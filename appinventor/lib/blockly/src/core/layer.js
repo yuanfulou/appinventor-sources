@@ -5,34 +5,29 @@ goog.provide('Blockly.Layer');
 Blockly.LayerBoxInit = function() {//initialize layerbox
   if(document.getElementById('layerbox')==null){
     var layerbox = document.createElement('div');
-    layerbox.id = 'layerbox';
+    layerbox.setAttribute('id', 'layerbox');
+    layerbox.setAttribute('style', 'position:absolute; zIndex:2; left:85%; top:1%; visibility:visible; font-family:sans-serif;');
     document.body.appendChild(layerbox);
-    //layerbox=document.getElementById('layerbox');
-    layerbox.style.position = 'absolute';
-    layerbox.style.zIndex = '2';
-    layerbox.style.left = '85%';
-    layerbox.style.top = '1%';
-    layerbox.style.visibility = 'visible';
+    
 
     var layerboxtitle = document.createElement('div');
-    layerboxtitle.id = 'layerboxtitle';
-    layerboxtitle.innerHTML = 'LAYERBOX\t';
+    layerboxtitle.setAttribute('id', 'layerboxtitle');
+    layerboxtitle.innerHTML = 'LayerBox\t';
+    layerboxtitle.setAttribute('style', 'background:#8fc202;')
     layerbox.appendChild(layerboxtitle);
-    layerboxtitle.style.background = '#8fc202';
 
     var layerboxhide = document.createElement('input');
     layerboxhide.src = 'media/min.gif';
     layerboxhide.type = 'image';
     layerboxhide.height = '12';
-    layerboxtitle.appendChild(layerboxhide);
     layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
+    layerboxtitle.appendChild(layerboxhide);
 
     var layerboxcontent = document.createElement('div')
     layerboxcontent.id = 'layerboxcontent';
+    layerboxcontent.setAttribute('style', 'background-color:rgb(202,220,169); visibility:visible; overflow:auto');
     layerbox.appendChild(layerboxcontent);
-    layerboxcontent.style.visibility = 'visible';
-    layerboxcontent.setAttribute('style', 'background-color:rgb(202,220,169);');
-    layerboxcontent.style.overflow = 'auto';
+
     Blockly.LayerBoxUpdate();
   }
   else{
@@ -47,9 +42,8 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
 
   var llist = Blockly.GetLayerList();
   var tbl = document.createElement('table');
-  tbl.style.width = '100%';
-
-  tbl.setAttribute('border','1');
+  tbl.setAttribute('style','width:100%;');
+  tbl.setAttribute('border','1;');
   var tbdy = document.createElement('tbody');
   for (var i = 0; i < llist.length; i++) {
     var tr = document.createElement('tr');
