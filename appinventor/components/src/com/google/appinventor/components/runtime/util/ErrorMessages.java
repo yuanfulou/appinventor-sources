@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime.util;
 
@@ -19,6 +20,7 @@ public final class ErrorMessages {
   public static final int ERROR_FUNCTIONALITY_NOT_SUPPORTED_EMAIL_PICKER = 2;
   public static final int ERROR_FUNCTIONALITY_NOT_SUPPORTED_FUSIONTABLES_CONTROL = 3;
   public static final int ERROR_FUNCTIONALITY_NOT_SUPPORTED_WEB_COOKIES = 4;
+  public static final int ERROR_FUNCTIONALITY_NOT_SUPPORTED_WIFI_DIRECT = 5;
   // LocationSensor errors
   public static final int ERROR_LOCATION_SENSOR_LATITUDE_NOT_FOUND = 101;
   public static final int ERROR_LOCATION_SENSOR_LONGITUDE_NOT_FOUND = 102;
@@ -39,6 +41,7 @@ public final class ErrorMessages {
   public static final int ERROR_TWITTER_STOP_FOLLOWING_FAILED = 312;
   public static final int ERROR_TWITTER_REQUEST_FRIEND_TIMELINE_FAILED = 313;
   public static final int ERROR_TWITTER_SEARCH_FAILED = 314;
+  public static final int ERROR_TWITTER_INVALID_IMAGE_PATH = 315;
   // LegoMindstormsNXT errors
   public static final int ERROR_NXT_BLUETOOTH_NOT_SET = 401;
   public static final int ERROR_NXT_NOT_CONNECTED_TO_ROBOT = 402;
@@ -92,6 +95,7 @@ public final class ErrorMessages {
   public static final int ERROR_MEDIA_FILE_ERROR = 708;
   public static final int ERROR_UNABLE_TO_FOCUS_MEDIA = 709;
   public static final int ERROR_SOUND_NOT_READY = 710;
+  public static final int ERROR_OUT_OF_MEMORY_LOADING_MEDIA = 711;
   // SoundRecorder errors
   public static final int ERROR_SOUND_RECORDER = 801;
   public static final int ERROR_SOUND_RECORDER_CANNOT_CREATE = 802;
@@ -119,6 +123,7 @@ public final class ErrorMessages {
   public static final int ERROR_WEB_BUILD_REQUEST_DATA_NOT_LIST = 1112;
   public static final int ERROR_WEB_BUILD_REQUEST_DATA_NOT_TWO_ELEMENTS = 1113;
   public static final int ERROR_WEB_UNABLE_TO_DELETE = 1114;
+  public static final int ERROR_WEB_XML_TEXT_DECODE_FAILED = 1115;
   // Contact picker (and PhoneNumberPicker) errors
   public static final int ERROR_PHONE_UNSUPPORTED_CONTACT_PICKER = 1107;
   public static final int ERROR_PHONE_UNSUPPORTED_SEARCH_IN_CONTACT_PICKING = 1108;
@@ -167,7 +172,21 @@ public final class ErrorMessages {
   // DatePicker errors
   public static final int ERROR_ILLEGAL_DATE = 2401;
 
-  // Please start the next group of error numbers at 2501.
+  // WebViewer errors
+  public static final int ERROR_WEBVIEW_SSL_ERROR = 2501;
+
+  //FusiontablesControl errors
+  public static final int FUSION_TABLES_QUERY_ERROR = 2601;
+
+  //TextToSpeech errors
+  public static final int ERROR_TTS_NOT_READY = 2701;
+
+  // AndroidViewComponent errors
+  public static final int ERROR_BAD_PERCENT = 2801;
+
+  // 2901-2999 are reserved for FIRST Tech Challenge.
+
+  // Please start the next group of error numbers at 3001.
 
 
   // Mapping of error numbers to error message format strings.
@@ -187,6 +206,9 @@ public final class ErrorMessages {
     errorMessages.put(ERROR_FUNCTIONALITY_NOT_SUPPORTED_WEB_COOKIES,
         "Warning: This app contains functionality that does not work on this phone: " +
         "using cookies in the Web component.");
+    errorMessages.put(ERROR_FUNCTIONALITY_NOT_SUPPORTED_WIFI_DIRECT,
+        "Warning: This app contains functionality that does not work on this phone: " +
+        "Wi-Fi peer-to-peer connectivity.");
     // LocationSensor errors
     errorMessages.put(ERROR_LOCATION_SENSOR_LATITUDE_NOT_FOUND,
         "Unable to find latitude from %s.");
@@ -226,6 +248,8 @@ public final class ErrorMessages {
         "Twitter RequestFriendTimeline failed: %s");
     errorMessages.put(ERROR_TWITTER_SEARCH_FAILED,
         "Twitter search failed.");
+    errorMessages.put(ERROR_TWITTER_INVALID_IMAGE_PATH, "Invalid Path to Image; Update will not " +
+        "be sent.");
     // LegoMindstormsNXT errors
     errorMessages.put(ERROR_NXT_BLUETOOTH_NOT_SET,
         "The Bluetooth property has not been set.");
@@ -326,6 +350,7 @@ public final class ErrorMessages {
     errorMessages.put(ERROR_UNABLE_TO_FOCUS_MEDIA,
         "Unable to grant exclusive lock of audio output stream to %s.");
     errorMessages.put(ERROR_SOUND_NOT_READY, "The sound is not ready to play: %s.");
+    errorMessages.put(ERROR_OUT_OF_MEMORY_LOADING_MEDIA, "Not Enough Memory to load: %s.");
      // SoundRecorder errors
     errorMessages.put(ERROR_SOUND_RECORDER, "An unexpected error occurred while recording sound.");
     errorMessages.put(ERROR_SOUND_RECORDER_CANNOT_CREATE, "Cannot start recording: %s");
@@ -356,6 +381,8 @@ public final class ErrorMessages {
         "Unable to decode the JSON text: %s");
     errorMessages.put(ERROR_WEB_HTML_TEXT_DECODE_FAILED,
         "Unable to decode the HTML text: %s");
+    errorMessages.put(ERROR_WEB_XML_TEXT_DECODE_FAILED,
+        "Unable to decode the XML text: %s");
     errorMessages.put(ERROR_WEB_MALFORMED_URL,
         "The specified URL is not valid: %s");
     errorMessages.put(ERROR_WEB_REQUEST_HEADER_NOT_LIST,
@@ -427,6 +454,15 @@ public final class ErrorMessages {
     errorMessages.put(ERROR_ILLEGAL_MINUTE, "The minute must be set to a value between 0 and 59.");
     //DatePicker errors
     errorMessages.put(ERROR_ILLEGAL_DATE, "The date you entered is invalid.");
+    errorMessages.put(ERROR_WEBVIEW_SSL_ERROR, "SSL Connection could not complete.");
+    // FusiontablesControl errors
+    errorMessages.put(FUSION_TABLES_QUERY_ERROR, "Fusion tables returned an error. The query was: %s. " +
+       "The response was: %s");
+    // TextToSpeech errors
+    errorMessages.put(ERROR_TTS_NOT_READY,
+       "TextToSpeech is not yet ready to perform this operation");
+    // AndroidViewComponent errors
+    errorMessages.put(ERROR_BAD_PERCENT, "Percent values should be between 0 and 100.");
   }
 
   private ErrorMessages() {

@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.client.editor.simple;
 
@@ -93,13 +94,13 @@ public final class SimpleVisibleComponentsPanel extends Composite implements Dro
     checkboxPhoneTablet.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event) {
-        boolean isChecked = event.getValue(); // auto-unbox from Boolean to boolean
-        projectEditor.changeProjectSettingsProperty(
-            SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
-            SettingsConstants.YOUNG_ANDROID_SETTINGS_PHONE_TABLET,
-            isChecked ? "True" : "False");
-        changeFormPreviewSize(isChecked);
-      }
+          boolean isChecked = event.getValue(); // auto-unbox from Boolean to boolean
+          projectEditor.changeProjectSettingsProperty(
+              SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
+              SettingsConstants.YOUNG_ANDROID_SETTINGS_PHONE_TABLET,
+              isChecked ? "True" : "False");
+          changeFormPreviewSize(isChecked);
+        }
     });
     phoneScreen.add(checkboxPhoneTablet);
 
@@ -117,6 +118,17 @@ public final class SimpleVisibleComponentsPanel extends Composite implements Dro
         checkboxPhoneTablet.setText(MESSAGES.previewTabletSize());
       }
     }
+  }
+
+  public void enableTabletPreviewCheckBox(boolean enable){
+    if (form != null){
+      if (!enable){
+        form.changePreviewSize(false);
+        checkboxPhoneTablet.setText(MESSAGES.previewTabletSize());
+        checkboxPhoneTablet.setChecked(false);
+      }
+    }
+    checkboxPhoneTablet.setEnabled(enable);
   }
 
   /**

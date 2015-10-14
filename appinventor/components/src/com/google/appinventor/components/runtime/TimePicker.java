@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2014 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime;
 
@@ -13,10 +14,12 @@ import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.YaVersion;
+import com.google.appinventor.components.runtime.util.Dates;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.text.format.DateFormat;
 import android.os.Handler;
 
 import java.util.Calendar;
@@ -42,6 +45,7 @@ public class TimePicker extends ButtonBase {
   private TimePickerDialog time;
   private boolean customTime = false;
   private Form form;
+  private Calendar instant;
   private Handler androidUIHandler;
 
   /**
@@ -56,8 +60,9 @@ public class TimePicker extends ButtonBase {
     hour = c.get(Calendar.HOUR_OF_DAY);
     minute = c.get(Calendar.MINUTE);
     time = new TimePickerDialog(this.container.$context(),
-        timePickerListener, hour, minute, false);
+        timePickerListener, hour, minute, DateFormat.is24HourFormat(this.container.$context()));
 
+    instant = Dates.TimeInstant(hour, minute);
     androidUIHandler = new Handler();
 
   }
@@ -91,6 +96,17 @@ public class TimePicker extends ButtonBase {
     return minute;
   }
 
+  /**
+   * Returns the instant in time that was last picked using the DatePicker.
+   * @return instant of the date
+   */
+  @SimpleProperty(
+    description = "The instant of the last time set using the time picker",
+    category = PropertyCategory.APPEARANCE)
+  public Calendar Instant() {
+    return instant;
+  }
+
   @SimpleFunction(description="Set the time to be shown in the Time Picker popup. Current time is shown by default.")
   public void SetTimeToDisplay(int hour, int minute) {
     if ((hour < 0) || (hour > 23)) {
@@ -99,8 +115,19 @@ public class TimePicker extends ButtonBase {
       form.dispatchErrorOccurredEvent(this, "SetTimeToDisplay", ErrorMessages.ERROR_ILLEGAL_MINUTE);
     } else {
       time.updateTime(hour, minute);
+      instant = Dates.TimeInstant(hour, minute);
       customTime = true;
     }
+  }
+
+  @SimpleFunction(description="Set the time from the instant to be shown in the Time Picker popup. " +
+    "Current time is shown by default.")
+  public void SetTimeToDisplayFromInstant(Calendar instant) {
+    int hour = Dates.Hour(instant);
+    int minute = Dates.Minute(instant);
+    time.updateTime(hour, minute);
+    instant = Dates.TimeInstant(hour, minute);
+    customTime = true;
   }
 
   @SimpleFunction(description="Launches the TimePicker popup.")
@@ -115,6 +142,7 @@ public class TimePicker extends ButtonBase {
       int h = c.get(Calendar.HOUR_OF_DAY);
       int m = c.get(Calendar.MINUTE);
       time.updateTime(h, m);
+      instant = Dates.TimeInstant(hour, minute);
     } else {
       customTime = false;
     }
@@ -128,6 +156,7 @@ public class TimePicker extends ButtonBase {
           if (view.isShown()) {
             hour = selectedHour;
             minute = selectedMinute;
+            instant = Dates.TimeInstant(hour, minute);
             // We post an event to the Android handler to do the App Inventor
             // event dispatch. This way it gets called outside of the context
             // of the timepicker's event. This permits the App Inventor dispatch

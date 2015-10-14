@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime;
 
@@ -38,6 +39,19 @@ public abstract class VisibleComponent implements Component {
   public abstract void Width(int width);
 
   /**
+   * Width property setter method.
+   *
+   * This version takes a percentage of the parent
+   * component's width as its input.
+   *
+   * @param wPercent width as a percent of its parent
+   *
+   */
+  @SimpleProperty(
+      category = PropertyCategory.APPEARANCE)
+  public abstract void WidthPercent(int wPercent);
+
+  /**
    * Height property getter method.
    *
    * @return  height property used by the layout
@@ -53,4 +67,17 @@ public abstract class VisibleComponent implements Component {
    */
   @SimpleProperty
   public abstract void Height(int height);
+
+  /**
+   * Height property setter method.
+   *
+   * This version takes a percentage of the parent
+   * component's height as its input.
+   *
+   * @param hPercent width as a percent of the height of its parent
+   *
+   */
+  @SimpleProperty(
+      category = PropertyCategory.APPEARANCE)
+  public abstract void HeightPercent(int hPercent);
 }

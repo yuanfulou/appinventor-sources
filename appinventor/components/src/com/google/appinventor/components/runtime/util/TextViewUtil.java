@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime.util;
 
@@ -11,6 +12,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.widget.TextView;
+import android.content.Context;
+
 
 /**
  * Helper methods for manipulating {@link TextView} objects.
@@ -90,10 +93,12 @@ public class TextViewUtil {
    * Returns the font size for a {@link TextView}.
    *
    * @param textview   text view instance
+   * @param context   Context in the screen to get the density of
    * @return  font size in pixel
    */
-  public static float getFontSize(TextView textview) {
-    return textview.getTextSize();
+  public static float getFontSize(TextView textview, Context context) {
+    float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+    return textview.getTextSize()/scaledDensity;
   }
 
   /**
@@ -171,6 +176,17 @@ public class TextViewUtil {
    */
   public static void setText(TextView textview, String text) {
     textview.setText(text);
+    textview.requestLayout();
+  }
+
+  /**
+   * Sets the padding for a {@link TextView}.
+   *
+   * @param textview   text view instance
+   * @param padding  left and right padding to be set
+   */
+  public static void setPadding(TextView textview, int padding) {
+    textview.setPadding(padding, padding, 0, 0);
     textview.requestLayout();
   }
 

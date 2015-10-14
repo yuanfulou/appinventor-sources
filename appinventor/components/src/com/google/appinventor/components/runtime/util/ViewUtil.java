@@ -1,11 +1,11 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime.util;
 
-import android.util.DisplayMetrics;
 import com.google.appinventor.components.runtime.Component;
 
 import android.graphics.drawable.Drawable;
@@ -23,6 +23,19 @@ public final class ViewUtil {
 
   private ViewUtil() {
   }
+
+  /**
+   * Calculate the device dependent pixels to render this view. The size in the designer is given
+   * in Density Independent Pixels, and we need to transform that to real pixels depending on the
+   * device running the app. The formula is simple: "pixel_size * density".
+   * @param view the view is needed to grab the Context object
+   * @param sizeInDP the size (in DP) specified in the designer
+   * @return size in Pixels for the particular device running the app.
+   */
+  private static int calculatePixels(View view, int sizeInDP) {
+    return (int) (view.getContext().getResources().getDisplayMetrics().density * sizeInDP);
+  }
+
 
   public static void setChildWidthForHorizontalLayout(View view, int width) {
     // In a horizontal layout, if a child's width is set to fill parent, we must set the
@@ -90,23 +103,11 @@ public final class ViewUtil {
           linearLayoutParams.width = calculatePixels(view, width);
           break;
       }
+//      System.err.println("ViewUtil: setChildWidthForVerticalLayout: view = " + view + " width = " + width);
       view.requestLayout();
     } else {
       Log.e("ViewUtil", "The view does not have linear layout parameters");
     }
-  }
-
-  /**
-   * Calculate the device dependent pixels to render this view. The size in the designer is given
-   * in Density Independent Pixels, and we need to transform that to real pixels depending on the
-   * device running the app. Formula taken from
-   * http://stackoverflow.com/questions/5012840/android-specifying-pixel-units-like-sp-px-dp-without-using-xml/5012893#5012893
-   * @param view the view is needed to grab the Context object
-   * @param sizeInDP the size (in DP) specified in the designer
-   * @return size in Pixels for the particular device running the app.
-   */
-  private static int calculatePixels(View view, int sizeInDP) {
-    return (int) ((view.getContext().getResources().getDisplayMetrics().density * sizeInDP) + 0.5f);
   }
 
   public static void setChildHeightForVerticalLayout(View view, int height) {

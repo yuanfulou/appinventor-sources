@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
-// Copyright 2011-2014 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Copyright 2011-2012 MIT, All rights reserved
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime;
 
@@ -46,12 +47,10 @@ public final class Ball extends Sprite {
   private int paintColor;
   private Paint paint;
   static final int DEFAULT_RADIUS = 5;
-  private Form form;
 
   public Ball(ComponentContainer container) {
     super(container);
     paint = new Paint();
-    form = container.$form();
 
     // Set default properties.
     PaintColor(Component.COLOR_BLACK);
@@ -63,7 +62,11 @@ public final class Ball extends Sprite {
   @Override
   protected void onDraw(Canvas canvas) {
     if (visible) {
-      canvas.drawCircle((float) xLeft + radius, (float) yTop + radius, radius, paint);
+      float correctedXLeft = (float)(xLeft * form.deviceDensity());
+      float correctedYTop =  (float)(yTop * form.deviceDensity());
+      float correctedRadius = radius * form.deviceDensity();
+      canvas.drawCircle(correctedXLeft + correctedRadius, correctedYTop +
+          correctedRadius, correctedRadius, paint);
     }
   }
 
@@ -81,12 +84,22 @@ public final class Ball extends Sprite {
   }
 
   @Override
+  public void HeightPercent(int pCent) {
+    // ignored
+  }
+
+  @Override
   public int Width() {
     return 2 * radius;
   }
 
   @Override
   public void Width(int width) {
+    // ignored
+  }
+
+  @Override
+  public void WidthPercent(int pCent) {
     // ignored
   }
 
@@ -107,8 +120,7 @@ public final class Ball extends Sprite {
       // Kind of both categories: APPEARANCE and BEHAVIOR
       category = PropertyCategory.APPEARANCE)
   public void Radius(int radius) {
-    // Make sure the radius takes the density of the device into account
-    this.radius = (int) ((this.form.getResources().getDisplayMetrics().density * radius) + 0.5f);
+    this.radius = radius;
     registerChange();
   }
 

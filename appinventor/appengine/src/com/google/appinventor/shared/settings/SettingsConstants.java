@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.shared.settings;
 
@@ -10,6 +11,7 @@ package com.google.appinventor.shared.settings;
  *
  */
 public class SettingsConstants {
+
   private SettingsConstants() {
   }
 
@@ -19,11 +21,18 @@ public class SettingsConstants {
   public static final String USER_GENERAL_SETTINGS = "GeneralSettings";
   public static final String GENERAL_SETTINGS_CURRENT_PROJECT_ID = "CurrentProjectId";
   public static final String USER_TEMPLATE_URLS = "TemplateUrls";
+  // If DISABLED_USER_URL is non-empty, then it is the URL to display in a frame
+  // inside of a modal dialog, displayed at login, with no exit. This is used to
+  // disable someone's account. The URL can be user specific in order to deliver
+  // a particular message to a particular user.
+  public static final String DISABLED_USER_URL = "DisabledUserUrl";
 
   public static final String SPLASH_SETTINGS = "SplashSettings";
 
   public static final String SPLASH_SETTINGS_SHOWSURVEY = "ShowSurvey";
   public static final String SPLASH_SETTINGS_DECLINED = "DeclinedSurvey";
+  public static final String SPLASH_SETTINGS_VERSION = "SplashVersion";
+
   /**
    *  YoungAndroid settings.
    */
@@ -38,4 +47,6 @@ public class SettingsConstants {
   public static final String YOUNG_ANDROID_SETTINGS_VERSION_CODE = "VersionCode";
   public static final String YOUNG_ANDROID_SETTINGS_VERSION_NAME = "VersionName";
   public static final String YOUNG_ANDROID_SETTINGS_USES_LOCATION = "UsesLocation";
+  public static final String YOUNG_ANDROID_SETTINGS_SIZING = "Sizing";
+  public static final String YOUNG_ANDROID_SETTINGS_APP_NAME = "AppName";
 }

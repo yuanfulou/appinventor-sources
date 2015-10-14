@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 // TODO(user): reconsider visibilities of the abstract base classes in this package
 
 package com.google.appinventor.client.editor.simple.components;
@@ -13,8 +14,6 @@ import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -97,6 +96,22 @@ abstract class MockImageBase extends MockVisibleComponent {
     return height;
   }
 
+  /**
+   * property to make the picture scale to fit its parents width and height
+   * @param newValue true will scale the picture
+   */
+  private void setScalingProperty(String newValue) {
+    if (newValue.equals("True")){
+      fitToScale = true;
+      image.setSize("100%", "100%");
+    }
+
+    else {
+      fitToScale = false;
+      image.setSize(getPreferredWidth() + "px", getPreferredHeight() + "px");
+    }
+  }
+
   // PropertyChangeListener implementation
 
   @Override
@@ -111,29 +126,16 @@ abstract class MockImageBase extends MockVisibleComponent {
     else if (propertyName.equals(PROPERTY_SCALE_PICTURE_TO_FIT)) {
       setScalingProperty(newValue);
       refreshForm();
+
     }
     else if (propertyName.equals(PROPERTY_NAME_WIDTH)) {
       image.setWidth(newValue + "px");
       refreshForm();
+
     }
     else if (propertyName.equals(PROPERTY_NAME_HEIGHT)) {
       image.setHeight(newValue + "px");
       refreshForm();
-    }
-  }
-
-  /**
-   * property to make the picture scale to fit its parents width and height
-   * @param newValue true will scale the picture
-   */
-  private void setScalingProperty(String newValue) {
-    if (newValue.equals("True")){
-      fitToScale = true;
-      image.setSize("100%", "100%");
-    }
-    else {
-      fitToScale = false;
-      image.setSize(getPreferredWidth() + "px", getPreferredHeight() + "px");
     }
   }
 }
