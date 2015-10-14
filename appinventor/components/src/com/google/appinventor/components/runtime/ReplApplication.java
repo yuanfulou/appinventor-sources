@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 package com.google.appinventor.components.runtime;
 
 import android.app.Application;
@@ -50,8 +51,21 @@ public class ReplApplication extends Application {
     }
   }
 
+  public static void reportError(Throwable ex, String reportId) {
+    ACRA.getErrorReporter().putCustomData("reportid", reportId);
+    reportError(ex);
+  }
+
   public static void reportError(Throwable ex) {
     if (thisInstance != null && thisInstance.active)
       ACRA.getErrorReporter().handleException(ex);
+  }
+
+  public static boolean isAcraActive() {
+    if (thisInstance != null && thisInstance.active) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

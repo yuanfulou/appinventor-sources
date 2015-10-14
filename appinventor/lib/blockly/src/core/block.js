@@ -34,7 +34,7 @@ goog.require('Blockly.Connection');
 goog.require('Blockly.ContextMenu');
 goog.require('Blockly.ErrorIcon');
 goog.require('Blockly.Input');
-//LAYER
+//layer
 goog.require('Blockly.Layer');
 goog.require('Blockly.Msg');
 goog.require('Blockly.Mutator');
@@ -141,8 +141,9 @@ Blockly.Block.prototype.fill = function(workspace, prototypeName) {
   this.inputList = [];
   this.inputsInline = false;
   this.rendered = false;
-  //LAYER
+  //layer
   this.layerLabel = null;
+  this.layerComment = "";
   this.disabled = false;
   this.tooltip = '';
   this.contextMenu = true;
@@ -337,21 +338,6 @@ Blockly.Block.prototype.select = function() {
   Blockly.selected = this;
   this.svg_.addSelect();
   Blockly.fireUiEvent(this.workspace.getCanvas(), 'blocklySelectChange');
-  //Layer
-  //this.rendered=false
-  //this.setCollapsed(true);
-  //var xmlBlock = Blockly.Xml.blockToDom_(this);
-  //console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
-  /*document.getElementById("layerbox").style.position="absolute";
-  document.getElementById("layerbox").style.width="13%";
-  document.getElementById("layerbox").style.height="80%";
-  document.getElementById("layerbox").style.z-index="100";
-  document.getElementById("layerbox").style.left="85%";
-  document.getElementById("layerbox").style.top="1%";
-  document.getElementById("layerbox").style.background="#b0c4de";*/
-  //for layer debuging
-  //console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
-  //console.log(Blockly.haslayerbox);
 };
 
 /**
@@ -362,6 +348,22 @@ Blockly.Block.prototype.unselect = function() {
   Blockly.selected = null;
   this.svg_.removeSelect();
   Blockly.fireUiEvent(this.workspace.getCanvas(), 'blocklySelectChange');
+};
+
+/**
+ * Mark this block as Bad.  Highlight it visually in Red.
+ */
+Blockly.Block.prototype.badBlock = function() {
+  goog.asserts.assertObject(this.svg_, 'Block is not rendered.');
+  this.svg_.addBadBlock();
+};
+
+/**
+ * Check to see if this block is bad.
+ */
+Blockly.Block.prototype.isBadBlock = function() {
+  goog.asserts.assertObject(this.svg_, 'Block is not rendered.');
+  return this.svg_.isBadBlock();
 };
 
 /**
@@ -466,11 +468,10 @@ Blockly.Block.prototype.unplug = function(healStack, bump) {
       // Detach this block from the parent's tree.
       this.setParent(null);
     }
-    if (healStack && this.nextConnection &&
-        this.nextConnection.targetConnection) {
+    var nextBlock = this.getNextBlock();
+    if (healStack && nextBlock) {
       // Disconnect the next statement.
       var nextTarget = this.nextConnection.targetConnection;
-      var nextBlock = this.nextConnection.targetBlock();
       nextBlock.setParent(null);
       if (previousTarget) {
         // Attach the next statement to the previous statement.
@@ -574,7 +575,7 @@ Blockly.Block.prototype.getHeightWidthNeil = function() {
   var height = this.svg_.height;
   var width = this.svg_.width;
   // Recursively add size of subsequent blocks.
-  var nextBlock = this.nextConnection && this.nextConnection.targetBlock();
+  var nextBlock = this.getNextBlock();
   if (nextBlock) {
     var nextHeightWidth = nextBlock.getHeightWidthNeil();
     height += nextHeightWidth.height - 4;  // Height of tab.
@@ -677,11 +678,19 @@ Blockly.Block.prototype.onMouseUp_ = function(e) {
     } else if (this_.workspace.trashcan && this_.workspace.trashcan.isOpen) {
       var trashcan = this_.workspace.trashcan;
       goog.Timer.callOnce(trashcan.close, 100, trashcan);
-      Blockly.selected.dispose(false, true);
+      if (Blockly.selected.confirmDeletion()) {
+        Blockly.selected.dispose(false, true);
+      }
       // Dropping a block on the trash can will usually cause the workspace to
       // resize to contain the newly positioned block.  Force a second resize
       // now that the block has been deleted.
       Blockly.fireUiEvent(window, 'resize');
+    } else if (this_.workspace.backpack && this_.workspace.backpack.isOpen) {
+      var backpack = this_.workspace.backpack
+	//      var xy = this.getRelativeToSurfaceXY();
+      goog.Timer.callOnce(backpack.close, 100, backpack);
+      backpack.addToBackpack(Blockly.selected);
+      Blockly.mainWorkspace.backpack.onMouseUp(e, Blockly.selected.startDragMouseX, Blockly.selected.startDragMouseY);
     }
     if (Blockly.highlightedConnection_) {
       Blockly.highlightedConnection_.unhighlight();
@@ -748,7 +757,7 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
   var block = this;
   var options = [];
 
-  if (this.isDeletable() && !block.isInFlyout) {
+  if (!this.isBadBlock() && this.isDeletable() && this.isMovable() && !block.isInFlyout) {
     // Option to duplicate this block.
     var duplicateOption = {
       text: Blockly.Msg.DUPLICATE_BLOCK,
@@ -762,7 +771,7 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
     }
     options.push(duplicateOption);
 
-    if (this.isEditable() && !this.collapsed_) {
+    if (this.isEditable() && !this.collapsed_ && Blockly.comments) {
       // Option to add/remove a comment.
       var commentOption = {enabled: true};
       if (this.comment) {
@@ -815,24 +824,40 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
       }
     }
 
-    // Option to disable/enable block.
-    var disableOption = {
-      text: this.disabled ?
-          Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
-      enabled: !this.getInheritedDisabled(),
+    if (Blockly.disable) {
+      // Option to disable/enable block.
+      var disableOption = {
+        text: this.disabled ?
+            Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
+        enabled: !this.getInheritedDisabled(),
+        callback: function() {
+          block.setDisabled(!block.disabled);
+        }
+      };
+      options.push(disableOption);
+    }
+
+    // Option to copy to backpack.
+    var backpackOption = {
+      enabled:true,
+      text: Blockly.Msg.COPY_TO_BACKPACK +
+        " (" + Blockly.mainWorkspace.backpack.count() + ")",
       callback: function() {
-        block.setDisabled(!block.disabled);
+        if (Blockly.selected && Blockly.selected.isDeletable() &&
+            Blockly.selected.workspace == Blockly.mainWorkspace) {
+          Blockly.mainWorkspace.backpack.addToBackpack(Blockly.selected);
+        }
       }
     };
-    options.push(disableOption);
+    options.push(backpackOption);
 
     // Option to delete this block.
     // Count the number of blocks that are nested in this block.
     var descendantCount = this.getDescendants().length;
-    if (block.nextConnection && block.nextConnection.targetConnection) {
+    var nextBlock = this.getNextBlock();
+    if (nextBlock) {
       // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= this.nextConnection.targetBlock().
-          getDescendants().length;
+      descendantCount -= nextBlock.getDescendants().length;
     }
     var deleteOption = {
       text: descendantCount == 1 ? Blockly.Msg.DELETE_BLOCK :
@@ -862,7 +887,7 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
       var layerName=prompt("Please enter the Layer Label",block.layerLabel);
     }
     else{
-      var layerName=prompt("Please enter the Layer Label","Layer1");
+      var layerName=prompt("Please enter the Layer Label","Layer" + (Blockly.GetLayerList().length + 1));
     }
     if (layerName!=null){
       block.setLayerLabel(layerName);
@@ -1036,6 +1061,10 @@ Blockly.Block.prototype.onMouseMove_ = function(e) {
       if (this_.workspace.trashcan && this_.isDeletable()) {
         this_.workspace.trashcan.onMouseMove(e);
       }
+      // Flip the backpack image if needed
+      if (this_.workspace.backpack) {
+        this_.workspace.backpack.onMouseMove(e);
+      }
     }
     // This event has been handled.  No need to bubble up to the document.
     e.stopPropagation();
@@ -1111,11 +1140,18 @@ Blockly.Block.prototype.getSurroundParent = function() {
         // Ran off the top.
         return null;
       }
-    } while (block.nextConnection &&
-             block.nextConnection.targetBlock() == prevBlock);
+    } while (block.getNextBlock() == prevBlock);
     // This block is an enclosing parent, not just a statement in a stack.
     return block;
   }
+};
+
+/**
+ * Return the next statement block directly connected to this block.
+ * @return {Blockly.Block} The next statement block or null.
+ */
+Blockly.Block.prototype.getNextBlock = function() {
+  return this.nextConnection && this.nextConnection.targetBlock();
 };
 
 /**
@@ -1212,6 +1248,28 @@ Blockly.Block.prototype.getDescendants = function() {
     blocks.push.apply(blocks, child.getDescendants());
   }
   return blocks;
+};
+
+/**
+ * Show a confirmation dialog if users intend to delete more that #DELETION_THRESHOLD blocks.
+ * @returns {Boolean} true if there are less than #DELETION_THRESHOLD blocks to delete or the user
+ * confirms deletion.
+ */
+Blockly.Block.prototype.confirmDeletion = function(){
+  var DELETION_THRESHOLD = 3;
+
+  var descendantCount = Blockly.selected.getDescendants().length;
+  // Filter out indirect descendants
+  if (Blockly.selected.nextConnection && Blockly.selected.nextConnection.targetConnection) {
+    descendantCount -= Blockly.selected.nextConnection.targetBlock().getDescendants().length;
+  }
+
+  if (descendantCount >= DELETION_THRESHOLD) {
+    return confirm(Blockly.Msg.WARNING_DELETE_X_BLOCKS.replace('%1', String(descendantCount)));
+  }
+  else {
+    return true;
+  }
 };
 
 /**
@@ -1561,18 +1619,23 @@ Blockly.Block.prototype.setLayerLabel = function(layerName) {
   for (var x = 0, input; input = this.inputList[x]; x++) {//?
     if (input.connection) {
       var child = input.connection.targetBlock();
-      if (child) {
-        if (1) {
-          child.setLayerLabel(layerName);
-        }
-      }
+      if (child) child.setLayerLabel(layerName);  
     }
   }
-  if(Blockly.haslayerbox){
-    Blockly.LayerBoxUpdate();
-  }
-}
+  if(Blockly.haslayerbox) Blockly.LayerBoxUpdate();
+};
 
+/**
+ * Set LayerComment
+ * @param {string}.
+ */
+ Blockly.Block.prototype.setLayerComment = function(comment) {
+  //console.log("setLayerLabel to "+layerName)
+  this.layerComment = comment;
+  this.workspace.fireChangeEvent();
+ 
+};
+ 
 /**
  * Get whether the block is collapsed or not.
  * @return {boolean} True if collapsed.

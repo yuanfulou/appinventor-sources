@@ -95,9 +95,17 @@ Blockly.HSV_SATURATION = 0.45;
 Blockly.HSV_VALUE = 0.65;
 
 /**
- * Convert a hue (HSV model) or an RGB Array
- * into an RGB hex triplet.
- * @param {number|Array} hueOrRGBArray Hue on a colour wheel (0-360) or RGB array.
+ * Sprited icons and images.
+ */
+Blockly.SPRITE = {
+  width: 64,
+  height: 92,
+  url: 'media/sprites.png'
+};
+
+/**
+ * Convert a hue (HSV model) into an RGB hex triplet.
+ * @param {number} hue Hue on a colour wheel (0-360).
  * @return {string} RGB code, e.g. '#5ba65b'.
  */
 Blockly.makeColour = function(hueOrRGBArray) {
@@ -219,25 +227,21 @@ Blockly.localConnection_ = null;
 
 /**
  * Number of pixels the mouse must move before a drag starts.
- * @const
  */
 Blockly.DRAG_RADIUS = 5;
 
 /**
  * Maximum misalignment between connections for them to snap together.
- * @const
  */
 Blockly.SNAP_RADIUS = 20;
 
 /**
  * Delay in ms between trigger and bumping unconnected block out of alignment.
- * @const
  */
 Blockly.BUMP_DELAY = 250;
 
 /**
  * Number of characters to truncate a collapsed block to.
- * @const
  */
 Blockly.COLLAPSE_CHARS = 30;
 
@@ -253,6 +257,13 @@ Blockly.mainWorkspace = null;
  * @private
  */
 Blockly.clipboard_ = null;
+
+/**
+ * Wrapper function called when a touch mouseUp occurs during a drag operation.
+ * @type {Array.<!Array>}
+ * @private
+ */
+Blockly.onTouchUpWrapper_ = null;
 
 /**
  * Returns the dimensions of the current SVG image.
@@ -301,11 +312,18 @@ Blockly.latestClick = { x: 0, y: 0 };
 Blockly.onMouseDown_ = function(e) {
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
   Blockly.svgResize();
-  Blockly.terminateDrag_(); // In case mouse-up event was lost.
+  Blockly.terminateDrag_();  // In case mouse-up event was lost.
   Blockly.hideChaff();
   //if drawer exists and supposed to close
   if(Blockly.Drawer && Blockly.Drawer.flyout_.autoClose) {
     Blockly.Drawer.hide();
+  }
+
+  //if backpack exists and clicked, open or close
+  if (Blockly.mainWorkspace.backpack && Blockly.mainWorkspace.backpack.mouseIsOver(e)) {
+    Blockly.mainWorkspace.backpack.openBackpack();
+  } else if(Blockly.mainWorkspace.backpack && Blockly.Backpack.flyout_.autoClose) {
+    Blockly.Backpack.hide();
   }
 
   //Closes mutators
@@ -332,8 +350,7 @@ Blockly.onMouseDown_ = function(e) {
   if (e.target == Blockly.svg && Blockly.isRightButton(e)) {
     // Right-click.
     Blockly.showContextMenu_(e);
-  } else if ((Blockly.readOnly || isTargetSvg) &&
-             Blockly.mainWorkspace.scrollbar) {
+  } else if ((Blockly.readOnly || isTargetSvg) && Blockly.mainWorkspace.scrollbar) {
     // If the workspace is editable, only allow dragging when gripping empty
     // space.  Otherwise, allow dragging when gripping anywhere.
     Blockly.mainWorkspace.dragMode = true;
@@ -344,6 +361,15 @@ Blockly.onMouseDown_ = function(e) {
         Blockly.mainWorkspace.getMetrics();
     Blockly.mainWorkspace.startScrollX = Blockly.mainWorkspace.scrollX;
     Blockly.mainWorkspace.startScrollY = Blockly.mainWorkspace.scrollY;
+
+    // If this is a touch event then bind to the mouseup so workspace drag mode
+    // is turned off and double move events are not performed on a block.
+    // See comment in inject.js Blockly.init_ as to why mouseup events are
+    // bound to the document instead of the SVG's surface.
+    if ('mouseup' in Blockly.bindEvent_.TOUCH_MAP) {
+      Blockly.onTouchUpWrapper_ =
+          Blockly.bindEvent_(document, 'mouseup', null, Blockly.onMouseUp_);
+    }
   }
 };
 
@@ -355,6 +381,12 @@ Blockly.onMouseDown_ = function(e) {
 Blockly.onMouseUp_ = function(e) {
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
+
+  // Unbind the touch event if it exists.
+  if (Blockly.onTouchUpWrapper_) {
+    Blockly.unbindEvent_(Blockly.onTouchUpWrapper_);
+    Blockly.onTouchUpWrapper_ = null;
+  }
 };
 
 /**
@@ -380,6 +412,7 @@ Blockly.onMouseMove_ = function(e) {
     // Move the scrollbars and the page will scroll automatically.
     Blockly.mainWorkspace.scrollbar.set(-x - metrics.contentLeft,
                                         -y - metrics.contentTop);
+    e.stopPropagation();
   }
 };
 
@@ -401,22 +434,10 @@ Blockly.onKeyDown_ = function(e) {
     // Delete or backspace.
     try {
       if (Blockly.selected && Blockly.selected.isDeletable()) {
-        var descendantCount = Blockly.selected.getDescendants().length;
-        if (Blockly.selected.nextConnection && Blockly.selected.nextConnection.targetConnection) {
-          descendantCount -= Blockly.selected.nextConnection.targetBlock().
-            getDescendants().length;
-        }
-        // Ask for confirmation before deleting 3 or more blocks
-        if (descendantCount >= 3) {
-          if (confirm("Are you sure you want to delete all " + descendantCount + " of these blocks?")) {
-            Blockly.hideChaff();
-            Blockly.selected.dispose(true, true);
-          }
-        }
-        else {
-          Blockly.hideChaff();
+        if (Blockly.selected.confirmDeletion()){
           Blockly.selected.dispose(true, true);
         }
+        Blockly.hideChaff()
       }
     } finally {
       // Stop the browser from going back to the previous page.
@@ -425,7 +446,8 @@ Blockly.onKeyDown_ = function(e) {
       e.preventDefault();
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
-    if (Blockly.selected && Blockly.selected.isDeletable() &&
+    if (Blockly.selected &&
+        Blockly.selected.isDeletable() && Blockly.selected.isMovable() &&
         Blockly.selected.workspace == Blockly.mainWorkspace) {
       Blockly.hideChaff();
       if (e.keyCode == 67) {
@@ -480,25 +502,44 @@ Blockly.showContextMenu_ = function(e) {
     return;
   }
   var options = [];
+  // Add a little animation to collapsing and expanding.
+  var COLLAPSE_DELAY = 10;
 
   if (Blockly.collapse) {
     var hasCollapsedBlocks = false;
     var hasExpandedBlocks = false;
     var topBlocks = Blockly.mainWorkspace.getTopBlocks(false);
     for (var i = 0; i < topBlocks.length; i++) {
-      if (topBlocks[i].isCollapsed()) {
-        hasCollapsedBlocks = true;
-      } else {
-        hasExpandedBlocks = true;
+      var block = topBlocks[i];
+      while (block) {
+        if (block.isCollapsed()) {
+          hasCollapsedBlocks = true;
+        } else {
+          hasExpandedBlocks = true;
+        }
+        block = block.getNextBlock();
       }
     }
+
+    var exportOption = {enabled: true};
+    exportOption.text = Blockly.Msg.EXPORT_IMAGE;
+    exportOption.callback = function() {
+      Blockly.ExportBlocksImage.onclickExportBlocks(Blockly.mainWorkspace.getMetrics());
+    }
+    options.push(exportOption);
 
     // Option to collapse top blocks.
     var collapseOption = {enabled: hasExpandedBlocks};
     collapseOption.text = Blockly.Msg.COLLAPSE_ALL;
     collapseOption.callback = function() {
+      var ms = 0;
       for (var i = 0; i < topBlocks.length; i++) {
-        topBlocks[i].setCollapsed(true);
+        var block = topBlocks[i];
+        while (block) {
+          setTimeout(block.setCollapsed.bind(block, true), ms);
+          block = block.getNextBlock();
+          ms += COLLAPSE_DELAY;
+        }
       }
       Blockly.resetWorkspaceArrangements();
     };
@@ -510,16 +551,22 @@ Blockly.showContextMenu_ = function(e) {
     expandOption.callback = function() {
       Blockly.Instrument.initializeStats("expandAllCollapsedBlocks");
       Blockly.Instrument.timer(
-      function () {
-      for (var i = 0; i < topBlocks.length; i++) {
-        topBlocks[i].setCollapsed(false);
-      }
-      Blockly.resetWorkspaceArrangements();
-      },
-      function (result, timeDiff) {
-        Blockly.Instrument.stats.totalTime = timeDiff;
-        Blockly.Instrument.displayStats("expandAllCollapsedBlocks");
-      }
+          function () {
+            var ms = 0;
+            for (var i = 0; i < topBlocks.length; i++) {
+              var block = topBlocks[i];
+              while (block) {
+                setTimeout(block.setCollapsed.bind(block, false), ms);
+                block = block.getNextBlock();
+                ms += COLLAPSE_DELAY;
+              }
+            }
+            Blockly.resetWorkspaceArrangements();
+          },
+          function (result, timeDiff) {
+            Blockly.Instrument.stats.totalTime = timeDiff;
+            Blockly.Instrument.displayStats("expandAllCollapsedBlocks");
+          }
       );
     };
     options.push(expandOption);
@@ -561,14 +608,12 @@ Blockly.showContextMenu_ = function(e) {
       return (block.getFieldValue('NAME') || block.getFieldValue('PROCNAME'));
     return block.category;
   }
-
-  /**LAYER YFLOU
+  /** Layer
    * 
    */
   function comparisonLayerLabel(block){
     return block.layerLabel;
   }
-
   /**
    * Function used to sort blocks by Category.
    * @param {!Blockly.Block} a first block to be compared
@@ -578,12 +623,12 @@ Blockly.showContextMenu_ = function(e) {
   function sortByCategory(a,b) {
     var comparatorA = comparisonName(a).toLowerCase();
     var comparatorB = comparisonName(b).toLowerCase();
+
     if (comparatorA < comparatorB) return -1;
     else if (comparatorA > comparatorB) return +1;
     else return 0;
   }
-
-  /**LAYER YFLOU
+  /**Layer
    * 
    */
   function sortByLayerLabel(a,b){
@@ -591,17 +636,17 @@ Blockly.showContextMenu_ = function(e) {
       var comparatorA = comparisonLayerLabel(a);
     }
     else{
-      var comparatorA = "zzz"
+      var comparatorA = "zzz";
     }
     if(comparisonLayerLabel(b)){
       var comparatorB = comparisonLayerLabel(b);
     }
     else{
-      var comparatorB = "zzz"
+      var comparatorB = "zzz";
     }
-    if (comparatorA < comparatorB) return -1;
-    else if (comparatorA > comparatorB) return +1;
-    else return 0;
+	if (comparatorA < comparatorB) return -1;
+	else if (comparatorA > comparatorB) return +1;
+	else return 0;
   }
 
   // Arranges block in layout (Horizontal or Vertical).
@@ -612,7 +657,7 @@ Blockly.showContextMenu_ = function(e) {
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
       topblocks.sort(sortByCategory);
     }
-    //LAYER If the blocks are arranged by LayerLabel, sort the array
+	//LAYER If the blocks are arranged by LayerLabel, sort the array
     if (Blockly.workspace_arranged_type ==="SortByLayer"){//sort by LAYER
       topblocks.sort(sortByLayerLabel);
     }
@@ -634,6 +679,7 @@ Blockly.showContextMenu_ = function(e) {
         }
       }
     }
+	//layer
     if (Blockly.workspace_arranged_type ==="ShowLayerwithother"){//pick up the layertoshow
       var k=0
       for (var j = 0; j < topblocks.length; j++) {
@@ -652,7 +698,6 @@ Blockly.showContextMenu_ = function(e) {
         }
       }
     }
-    //YFLOU
     var metrics = Blockly.mainWorkspace.getMetrics();
     var viewLeft = metrics.viewLeft + 5;
     var viewTop = metrics.viewTop + 5;
@@ -703,7 +748,7 @@ Blockly.showContextMenu_ = function(e) {
           break;
       }
     }
-    //LAYER push the unselected away
+	//LAYER push the unselected away
     if(Blockly.workspace_arranged_type ==="ShowLayer"){
       var metrics = Blockly.mainWorkspace.getMetrics();
       var viewLeft = metrics.viewLeft + 5;
@@ -730,7 +775,7 @@ Blockly.showContextMenu_ = function(e) {
         }
       }
     }
-    //YFLOU
+	//layer
   }
 
   // Sort by Category.
@@ -751,7 +796,7 @@ Blockly.showContextMenu_ = function(e) {
       arrangeOptionV.callback();
   }
 
-  // Sort by Layer.
+// Sort by Layer.
   /*var sortOptionLay = {enabled: (Blockly.workspace_arranged_type !== "SortByLayer")};
   sortOptionLay.text = "Sort by Layer";
   sortOptionLay.callback = function() {
@@ -789,9 +834,39 @@ Blockly.showContextMenu_ = function(e) {
     Blockly.LayerBoxInit();
   };
   options.push(LayerBoxOption);
-  //YFLOU
+  //layer
 
-  // Option to get help.
+  // Retrieve from backpack option.
+  var backpackRetrieve = {enabled: true};
+  backpackRetrieve.text = Blockly.Msg.BACKPACK_GET + " (" +
+      Blockly.mainWorkspace.backpack.count() + ")";
+  backpackRetrieve.callback = function() {
+      if (Blockly.mainWorkspace.backpack) {
+          Blockly.mainWorkspace.backpack.pasteBackpack(Blockly.backpack_);
+      }
+  }
+  options.push(backpackRetrieve);
+
+  // Copy all blocks to backpack option.
+  var backpackCopyAll = {enabled: true};
+  backpackCopyAll.text = Blockly.Msg.COPY_ALLBLOCKS;
+  backpackCopyAll.callback = function() {
+      if (Blockly.mainWorkspace.backpack) {
+          Blockly.mainWorkspace.backpack.addAllToBackpack();
+      }
+  }
+  options.push(backpackCopyAll);
+
+  // Clear backpack.
+  var backpackClear = {enabled: true};
+  backpackClear.text = Blockly.Msg.BACKPACK_EMPTY;
+  backpackClear.callback = function() {
+      Blockly.mainWorkspace.backpack.clear();
+      backpackRetrieve.text = Blockly.Msg.BACKPACK_GET;
+  }
+  options.push(backpackClear);
+
+// Option to get help.
   var helpOption = {enabled: false};
   helpOption.text = Blockly.Msg.HELP;
   helpOption.callback = function() {};
@@ -902,6 +977,11 @@ Blockly.preloadAudio_ = function() {
     sound.volume = .01;
     sound.play();
     sound.pause();
+    // iOS can only process one sound at a time.  Trying to load more than one
+    // corrupts the earlier ones.  Just load one and leave the others uncached.
+    if (goog.userAgent.IPAD || goog.userAgent.IPHONE) {
+      break;
+    }
   }
 };
 
@@ -1089,7 +1169,9 @@ Blockly.getMainWorkspace = function() {
 };
 
 // Export symbols that would otherwise be renamed by Closure compiler.
-window['Blockly'] = Blockly;
-Blockly['getMainWorkspace'] = Blockly.getMainWorkspace;
-Blockly['addChangeListener'] = Blockly.addChangeListener;
-Blockly['removeChangeListener'] = Blockly.removeChangeListener;
+if (!window['Blockly']) {
+  window['Blockly'] = {};
+}
+window['Blockly']['getMainWorkspace'] = Blockly.getMainWorkspace;
+window['Blockly']['addChangeListener'] = Blockly.addChangeListener;
+window['Blockly']['removeChangeListener'] = Blockly.removeChangeListener;

@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.client.editor.simple;
 
@@ -59,6 +60,13 @@ public abstract class SimpleEditor extends FileEditor {
    * @return  non-visible components panel
    */
   public abstract SimpleNonVisibleComponentsPanel getNonVisibleComponentsPanel();
+
+  /**
+   * Returns the visible components panel
+   *
+   * @return  visible components panel
+   */
+  public abstract SimpleVisibleComponentsPanel getVisibleComponentsPanel();
 
   /**
    * Returns true if this editor is for Screen1.

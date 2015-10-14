@@ -1,6 +1,7 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2013-2014 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 /**
  * @license
  * @fileoverview Visual blocks editor for App Inventor
@@ -241,6 +242,27 @@ Blockly.WarningHandler.checkDropDownContainsValidValue = function(params){
   return false;
 }
 
+// check if the component of the pasted block from the Backpack does not exist
+// - originally written by @evanrthomas
+// - added by @graceRyu
+
+Blockly.WarningHandler.checkComponentNotExistsError = function() {
+  if (this.isGeneric == true) { // Generic blocks take a component as an arg
+    return false;               // So we cannot check for existence
+  }
+  var component_names = Blockly.ComponentInstances.getInstanceNames();
+  if (component_names.indexOf(this.instanceName) == -1) {
+    var errorMessage = Blockly.ERROR_COMPONENT_DOES_NOT_EXIST;
+    if(this.errorIcon){
+      this.errorIcon.setText(errorMessage);
+    } else {
+      this.setErrorIconText(errorMessage);
+    }
+    return true;
+  }
+  return false;
+}
+
 // [lyn, 12/31/2013] Function that determines which component event handlers
 // in the main workspace are duplicates. Sets the IAmADuplicate property of each
 // duplicate event handler block to true; otherwise sets it to false.
@@ -268,7 +290,7 @@ Blockly.WarningHandler.determineDuplicateComponentEventHandlers = function(){
     if (topBlock.type == "component_event") {
       topBlock.IAmADuplicate = false; // default value for this field; may be changed to true below
       var typeName = topBlock.typeName;
-      var propertyName = typeName + ":" + topBlock.eventName + ":" + topBlock.instanceName;
+      var propertyName = typeName + ":" + topBlock.eventName + ":" + topBlock.instanceName + ":" + topBlock.disabled;
       /* [lyn, 01/04/2013] Notion of singleton component is not well-defined. Must think more about this!
          If adopt singleton component notion, will need the following code:
             // if (! Blockly.WarningHandler.isSingletonComponentType(typeName)) {
@@ -441,7 +463,7 @@ Blockly.WarningHandler.checkEmptySockets = function(){
 
   if(containsEmptySockets) {
     if(Blockly.WarningHandler.showWarningsToggle) {
-      var warningMessage = "You should fill all of the sockets with blocks";
+      var warningMessage = Blockly.Msg.MISSING_SOCKETS_WARNINGS;
       if(this.warning){
         this.warning.setText(warningMessage);
       } else {
@@ -460,7 +482,7 @@ Blockly.WarningHandler.checkBlockAtRoot = function(){
   if(this == rootBlock && this.blockType != "event" && this.type !="global_declaration" &&
      this.type != "procedures_defnoreturn" && this.type != "procedures_defreturn"){
     if(Blockly.WarningHandler.showWarningsToggle) {
-      var warningMessage = "This block should be connected to an event block or a procedure definition";
+      var warningMessage = Blockly.Msg.WRONG_TYPE_BLOCK_WARINGS;
       if(this.warning){
         this.warning.setText(warningMessage);
       } else {

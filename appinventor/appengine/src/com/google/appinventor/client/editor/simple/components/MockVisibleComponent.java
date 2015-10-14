@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.client.editor.simple.components;
 
@@ -42,10 +43,16 @@ public abstract class MockVisibleComponent extends MockComponent {
   protected static final String PROPERTY_NAME_COLUMN = "Column";
   protected static final String PROPERTY_NAME_ROW = "Row";
 
+  // Note: the values below are duplicated in Component.java
+  // If you change them here, change them there!
+
   // Length values for width and height
   // A value >= 0 specifies an explicit size.
   public static final int LENGTH_PREFERRED = -1;
   public static final int LENGTH_FILL_PARENT = -2;
+  // If the length is <= -1000 then add 1000 and change the sign to
+  // get the length is percent of Screen1
+  public static final int LENGTH_PERCENT_TAG = -1000;
 
   // Useful colors
   protected static final String COLOR_NONE = "00FFFFFF";

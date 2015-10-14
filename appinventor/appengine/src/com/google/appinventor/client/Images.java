@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.client;
 
@@ -23,6 +24,13 @@ public interface Images extends Resources {
    */
   @Source("com/google/appinventor/images/androidGreenSmall.png")
   ImageResource androidGreenSmall();
+
+  /**
+   * App Inventor Logo
+   * {@link Ode#createWelcomeDialog(boolean)}
+   */
+  @Source("com/google/appinventor/images/appinvlogo-32.png")
+  ImageResource appInventorLogo();
 
   /**
    * Close button image for the box widget
@@ -59,6 +67,12 @@ public interface Images extends Resources {
    */
   @Source("com/google/appinventor/images/phonebar.png")
   ImageResource phonebar();
+
+  /**
+   * Navigation bar shown below the form in the visual designer
+   */
+  @Source("com/google/appinventor/images/navigationbar.png")
+  ImageResource navigationbar();
 
   /**
    * Designer palette item: question mark for more component information
@@ -115,7 +129,7 @@ public interface Images extends Resources {
   ImageResource checkbox();
 
   /**
-   * Designer palette item: TimePicker Component
+   * Designer palette item: DatePicker Component
    */
   @Source("com/google/appinventor/images/datePicker.png")
   ImageResource datePickerComponent();
@@ -458,6 +472,11 @@ public interface Images extends Resources {
    */
   @Source("com/google/appinventor/images/procedures.png")
   ImageResource procedures();
+  /**
+    * Designer palette item: MediaStore
+    */
+  @Source("com/google/appinventor/images/mediastore.png")
+  ImageResource mediastore();
 
   /**
    * Designer palette item: Sharing Component
@@ -476,5 +495,11 @@ public interface Images extends Resources {
     */
   @Source("com/google/appinventor/images/yandex.png")
   ImageResource yandex();
+
+  /**
+   * Designer palette item: proximitysensor component
+   */
+  @Source("com/google/appinventor/images/proximitysensor.png")
+  ImageResource proximitysensor();
 
 }

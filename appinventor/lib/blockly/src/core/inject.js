@@ -41,8 +41,7 @@ Blockly.inject = function(container, opt_options) {
     throw 'Error: container is not in current document.';
   }
   if (opt_options) {
-    // TODO(scr): don't mix this in to global variables.
-    goog.mixin(Blockly, Blockly.parseOptions_(opt_options));
+    Blockly.parseOptions_(opt_options);
   }
   var startUi = function() {
     Blockly.createDom_(container);
@@ -86,7 +85,6 @@ Blockly.parseToolboxTree_ = function(tree) {
 /**
  * Configure Blockly to behave according to a set of options.
  * @param {!Object} options Dictionary of options.
- * @return {Object} Parsed options.
  * @private
  */
 Blockly.parseOptions_ = function(options) {
@@ -94,8 +92,10 @@ Blockly.parseOptions_ = function(options) {
   if (readOnly) {
     var hasCategories = false;
     var hasTrashcan = false;
-    //
+    var hasBackpack = false;
     var hasCollapse = false;
+    var hasComments = false;
+    var hasDisable = false;
     var tree = null;
   } else {
     var tree = Blockly.parseToolboxTree_(options['toolbox']);
@@ -110,6 +110,18 @@ Blockly.parseOptions_ = function(options) {
       hasCollapse = hasCategories;
     }
     var configForTypeBlock = options['typeblock_config'];
+    var hasBackpack = options['backpack'];
+    if (hasBackpack === undefined) {
+      hasBackpack = hasCategories;
+    }
+    var hasComments = options['comments'];
+    if (hasComments === undefined) {
+      hasComments = hasCategories;
+    }
+    var hasDisable = options['disable'];
+    if (hasDisable === undefined) {
+      hasDisable = hasCategories;
+    }
   }
   if (tree && !hasCategories) {
     // Scrollbars are not compatible with a non-flyout toolbox.
@@ -123,20 +135,21 @@ Blockly.parseOptions_ = function(options) {
   }
   var enableRealtime = !!options['realtime'];
   var realtimeOptions = enableRealtime ? options['realtimeOptions'] : undefined;
-  return {
-    RTL: !!options['rtl'],
-    collapse: hasCollapse,
-    readOnly: readOnly,
-    maxBlocks: options['maxBlocks'] || Infinity,
-    pathToBlockly: options['path'] || './',
-    hasCategories: hasCategories,
-    hasScrollbars: hasScrollbars,
-    hasTrashcan: hasTrashcan,
-    languageTree: tree,
-    configForTypeBlock: configForTypeBlock,
-    enableRealtime: enableRealtime,
-    realtimeOptions: realtimeOptions
-  };
+  Blockly.RTL = !!options['rtl'];
+  Blockly.collapse = hasCollapse;
+  Blockly.comments = hasComments;
+  Blockly.disable = hasDisable;
+  Blockly.readOnly = readOnly;
+  Blockly.maxBlocks = options['maxBlocks'] || Infinity;
+  Blockly.pathToBlockly = options['path'] || './';
+  Blockly.hasCategories = hasCategories;
+  Blockly.hasScrollbars = hasScrollbars;
+  Blockly.hasTrashcan = hasTrashcan;
+  Blockly.hasBackpack = hasBackpack;
+  Blockly.languageTree = tree;
+  Blockly.configForTypeBlock = configForTypeBlock;
+  Blockly.enableRealtime = enableRealtime;
+  Blockly.realtimeOptions = realtimeOptions;
 };
 
 /**
@@ -171,6 +184,7 @@ Blockly.createDom_ = function(container) {
     'xmlns:html': 'http://www.w3.org/1999/xhtml',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     'version': '1.1',
+    'id': 'blockly_Svg',
     'class': 'blocklySvg'
   }, null);
   /*
@@ -228,6 +242,14 @@ Blockly.createDom_ = function(container) {
   feMerge = Blockly.createSvgElement('feMerge', {}, filter);
   Blockly.createSvgElement('feMergeNode', {'in': 'offsetBlur'}, feMerge);
   Blockly.createSvgElement('feMergeNode', {'in': 'SourceGraphic'}, feMerge);
+
+  filter = Blockly.createSvgElement('filter',
+      {'id': 'blocklyBackpackShadowFilter'}, defs);
+  Blockly.createSvgElement('feGaussianBlur',
+      {'in': 'SourceAlpha', 'stdDeviation': 2, 'result': 'blur'}, filter);
+  Blockly.createSvgElement('feOffset',
+      {'in': 'blur', 'dx': 1, 'dy': 1, 'result': 'offsetBlur'}, filter);
+
   /*
     <filter id="blocklyShadowFilter">
       <feGaussianBlur stdDeviation="2"/>
@@ -396,13 +418,12 @@ Blockly.init_ = function() {
       Blockly.Toolbox.init();
     } else {
       // Build a fixed flyout with the root blocks.
-      if(Blockly.mainWorkspace.flyout_){
+      //if (Blockly.mainWorkspace.flyout_) {
         Blockly.mainWorkspace.flyout_.init(Blockly.mainWorkspace, true);
         Blockly.mainWorkspace.flyout_.show(Blockly.languageTree.childNodes);
+        // Translate the workspace sideways to avoid the fixed flyout.
         Blockly.mainWorkspace.scrollX = Blockly.mainWorkspace.flyout_.width_;
-      }
-
-      // Translate the workspace sideways to avoid the fixed flyout.
+      //}
       if (Blockly.RTL) {
         Blockly.mainWorkspace.scrollX *= -1;
       }
@@ -419,7 +440,9 @@ Blockly.init_ = function() {
   }
 
   Blockly.mainWorkspace.addTrashcan();
+  Blockly.mainWorkspace.addBackpack();
   Blockly.mainWorkspace.addWarningIndicator(Blockly.mainWorkspace);
+  //  Blockly.mainWorkspace.addBackpack(Blockly.getMainWorkspaceMetrics);
 
   // Load the sounds.
   Blockly.loadAudio_(

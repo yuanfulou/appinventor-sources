@@ -1,7 +1,8 @@
 // -*- mode: java; c-basic-offset: 2; -*-
 // Copyright 2009-2011 Google, All Rights reserved
 // Copyright 2011-2012 MIT, All rights reserved
-// Released under the MIT License https://raw.github.com/mit-cml/app-inventor/master/mitlicense.txt
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.components.runtime;
 
@@ -104,9 +105,16 @@ public interface Component {
   /*
    * Length constants (for width and height).
    */
+
+  // Note: the values below are duplicated in MockVisibleComponent.java
+  // If you change them here, change them there!
+
   static final int LENGTH_PREFERRED = -1;
   static final int LENGTH_FILL_PARENT = -2;
   static final int LENGTH_UNKNOWN = -3;
+  // If the length is <= -1000 then add 1000 and change the sign to
+  // get the length is percent of Screen1
+  static final int LENGTH_PERCENT_TAG = -1000;
 
   /*
    * Length constants for toast.
@@ -135,5 +143,8 @@ public interface Component {
   public static float SLIDER_MIN_VALUE = 10;
   public static float SLIDER_MAX_VALUE = 50;
   public static float SLIDER_THUMB_VALUE = (SLIDER_MIN_VALUE + SLIDER_MAX_VALUE) / 2.0f;
+
+  static final String DEFAULT_VALUE_TEXT_TO_SPEECH_COUNTRY = "";
+  static final String DEFAULT_VALUE_TEXT_TO_SPEECH_LANGUAGE = "";
 
 }

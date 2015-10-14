@@ -22,6 +22,7 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
     layerboxhide.height = '12';
     layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
     layerboxhide.setAttribute('style', 'position:absolute; left:50%; top:1%;');
+	layerboxhide.setAttribute('title', 'Minimize');
     layerboxtitle.appendChild(layerboxhide);
 
     var layerexport = document.createElement('input');
@@ -30,6 +31,7 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
     layerexport.height = '12';
     //layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
     layerexport.setAttribute('style', 'position:absolute; left:60%; top:1%;');
+	layerexport.setAttribute('title', 'Export the layer');
     layerboxtitle.appendChild(layerexport);
 
     var layerimport = document.createElement('input');
@@ -38,8 +40,9 @@ Blockly.LayerBoxInit = function() {//initialize layerbox
     layerimport.height = '12';
     //layerboxhide.setAttribute('onclick', ('Blockly.ShowLayerBoxContent();'));
     layerimport.setAttribute('style', 'position:absolute; left:70%; top:1%;');
+	layerimport.setAttribute('title', 'Import the layer');
     layerboxtitle.appendChild(layerimport);
-
+    
     var layerboxcontent = document.createElement('div')
     layerboxcontent.id = 'layerboxcontent';
     layerboxcontent.setAttribute('style', 'background-color:rgb(202,220,169); visibility:visible; overflow:auto');
@@ -81,7 +84,7 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
       td.appendChild(layerlist);
       tr.appendChild(td);
 
-      for(var j = 0; j<4; j++){
+      for(var j = 0; j<5; j++){
         var td = document.createElement('td');
         var x = document.createElement('div');
         if(j == 0){//show by layer
@@ -96,6 +99,7 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
           else{
             image.src = Blockly.CheckView(name);
           }
+		  image.setAttribute('title', 'Show/Hide layer');
           x.appendChild(image);
           x.setAttribute('selected', Blockly.CheckSelect(name));
           x.setAttribute('onclick', ('Blockly.LayerViewer(this.id);'));
@@ -104,14 +108,16 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
           x.setAttribute('id', llist[i]);
           var image = document.createElement("img");
           image.src = 'media/copy.gif';
+		  image.setAttribute('title', 'Duplicate layer');
           x.appendChild(image);
           x.setAttribute('onclick', ('Blockly.DuplicateByLayer(this.id);'));
         }
-        else if(j == 2){//diable by layer
+        else if(j == 2){//disable by layer
           x.setAttribute('id', llist[i] + "disabled");
           x.setAttribute('name', llist[i]);
           var image = document.createElement("img");
           image.src = 'media/red.gif';
+		  image.setAttribute('title', 'Enable/Disable layer');
           x.appendChild(image);
           x.setAttribute('selected', false);
           x.setAttribute('onclick', ('Blockly.DisableByLayer(this.id);'));
@@ -121,10 +127,21 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
           x.setAttribute('name', llist[i]);
           var image = document.createElement("img");
           image.src = 'media/min.gif';
+		  image.setAttribute('title', 'Collapse/Expand layer');
           x.appendChild(image);
           x.setAttribute('selected', false);
           x.setAttribute('onclick', ('Blockly.CollapseByLayer(this.id);'));
         }
+		else if(j==4){//close comment by layer
+		  x.setAttribute('id', llist[i] + "comment");
+          x.setAttribute('name', llist[i]);
+          var image = document.createElement("img");
+          image.src = 'media/Comment.gif';
+		  image.setAttribute('title', 'Comment');
+          x.appendChild(image);
+          x.setAttribute('selected', false);
+          x.setAttribute('onclick', ('Blockly.CommentByLayer("'+llist[i]+'");'));	
+		}
         td.appendChild(x);
         tr.appendChild(td);
       }
@@ -141,18 +158,21 @@ Blockly.LayerBoxUpdate = function() {//update layerbox if there's any change for
   layerboxcontent.appendChild(layerother);
   layerother.appendChild(t);
   layerother.setAttribute('onclick', ('Blockly.doshowLayerBlockwithother();'));
-
+  layerother.setAttribute('title', 'Show Layer Block with Others');
+  
   var sortbylayer = document.createElement('BUTTON');
   var t = document.createTextNode('SBL');
   layerboxcontent.appendChild(sortbylayer);
   sortbylayer.appendChild(t);
   sortbylayer.setAttribute('onclick', ('Blockly.dosortByLayerLabel();'));
-
+  sortbylayer.setAttribute('title', 'Sort By Layer Label');
+  
   var sortbyc = document.createElement('BUTTON');
   var t = document.createTextNode('SBC');
   layerboxcontent.appendChild(sortbyc);
   sortbyc.appendChild(t);
   sortbyc.setAttribute('onclick', ('Blockly.dosortByC();'));  
+  sortbyc.setAttribute('title', 'Sort By Category');  
 }
 
 Blockly.CheckView = function (name){
@@ -202,7 +222,7 @@ Blockly.ShowLayerBoxContent = function() {//user can hide LBContent if they want
 }
 
 Blockly.EditLayerName = function(oldname) {//user can edit the name of layer by clicking it
-  var newlayername = prompt('Please enter the Layer Label','Layer1');
+  var newlayername = prompt('Please enter the Layer Label', oldname);
   var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
   for (var i = 0; i < topblocks.length; i++) {
     if(topblocks[i].layerLabel === oldname && newlayername != null){
@@ -227,6 +247,7 @@ Blockly.LayerViewer = function(id){//dicide how to show by layerlabel
     x.innerHTML = "";
     var image = document.createElement("img");
     image.src = 'media/eye.gif';
+	image.setAttribute('title', 'Show/Hide layer');
     x.appendChild(image);
     
     if(Blockly.LayerView.indexOf(name) == -1){//avoid repeat
@@ -238,6 +259,7 @@ Blockly.LayerViewer = function(id){//dicide how to show by layerlabel
     x.innerHTML = "";
     var image = document.createElement("img");
     image.src = 'media/closedeye.gif';
+	image.setAttribute('title', 'Show/Hide layer');
     x.appendChild(image);
 
     for(var i = 0; i<Blockly.LayerView.length; i++){
@@ -276,6 +298,7 @@ Blockly.DisableByLayer = function(id) {//disable by layer
         x.innerHTML = "";
         var image = document.createElement("img");
         image.src = 'media/green.gif';
+		image.setAttribute('title', 'Enable/Disable layer');
         x.appendChild(image);
         topblocks[j].setDisabled(true);
       }
@@ -284,6 +307,7 @@ Blockly.DisableByLayer = function(id) {//disable by layer
         x.innerHTML = "";
         var image = document.createElement("img");
         image.src = 'media/red.gif';
+		image.setAttribute('title', 'Enable/Disable layer');
         x.appendChild(image);
         topblocks[j].setDisabled(false);
       }
@@ -293,7 +317,6 @@ Blockly.DisableByLayer = function(id) {//disable by layer
 
 Blockly.CollapseByLayer = function(id) {//collapse by layer
   var x = document.getElementById(id);
-  collapsed = x.getAttribute("selected");
   name = x.getAttribute("name");
   var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
   targetlayer = name.split(', ');
@@ -304,6 +327,7 @@ Blockly.CollapseByLayer = function(id) {//collapse by layer
         x.innerHTML = "";
         var image = document.createElement("img");
         image.src = 'media/max.gif';
+		image.setAttribute('title', 'Collapse/Expand layer');
         x.appendChild(image);
         topblocks[j].setCollapsed(true);
       }
@@ -312,6 +336,7 @@ Blockly.CollapseByLayer = function(id) {//collapse by layer
         x.innerHTML = "";
         var image = document.createElement("img");
         image.src = 'media/min.gif';
+		image.setAttribute('title', 'Collapse/Expand layer');
         x.appendChild(image);
       	topblocks[j].setCollapsed(false);
       }
@@ -331,4 +356,107 @@ Blockly.GetLayerList = function() {//return the layerlist
   }
   llist.sort();
   return llist;
+}
+
+Blockly.CommentByLayer = function(name) {//Comment by layer
+	var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
+	targetlayer = name;
+	for (var j = 0; j < topblocks.length; j++) {
+		if(targetlayer === topblocks[j].layerLabel){
+			//create layercommentbox
+			if(document.getElementById('layercommentbox')==null){
+				var layercommentbox = document.createElement('div');
+				layercommentbox.setAttribute('id', 'layercommentbox');
+				layercommentbox.setAttribute('style', 'position:absolute; zIndex:2; left:70%; top:1%; width:200px; height:300px; visibility:visible; font-family:sans-serif;');
+				document.body.appendChild(layercommentbox);
+				var layercommentboxtitle = document.createElement('div');
+				layercommentboxtitle.setAttribute('id', 'layercommentboxtitle');
+				layercommentboxtitle.innerHTML = 'LayerComment';
+				layercommentboxtitle.setAttribute('style', 'background:#8fc202;')
+				layercommentbox.appendChild(layercommentboxtitle);
+				
+				var layercommentboxcontent = document.createElement('div')
+				layercommentboxcontent.id = 'layercommentboxcontent';
+				layercommentboxcontent.setAttribute('style', 'background-color:rgb(202,220,169); visibility:visible; width:200px; height:200px; resize: none;');
+				layercommentbox.appendChild(layercommentboxcontent);
+				
+				var layercommentboxfoot = document.createElement('div');
+				layercommentboxfoot.setAttribute('id', 'layercommentboxfoot');
+				layercommentboxfoot.setAttribute('style', 'background:#8fc202;')
+				
+				var closebutton = document.createElement('button');
+				closebutton.setAttribute('id', 'layercommentclosebutton');
+				closebutton.innerHTML = 'Close';
+				closebutton.setAttribute('onclick', ('Blockly.CloseLayerComment();'));
+				closebutton.setAttribute('style','width:100px;');
+				layercommentboxfoot.appendChild(closebutton);
+				
+				var updatebutton = document.createElement('button');
+				updatebutton.setAttribute('id', 'layercommentupdatebutton');
+				updatebutton.innerHTML = 'Update';
+				updatebutton.setAttribute('onclick', ('Blockly.UpdateLayerComment();'));
+				updatebutton.setAttribute('style','width:100px;');
+				layercommentboxfoot.appendChild(updatebutton);
+				layercommentbox.appendChild(layercommentboxfoot);
+			}
+			Blockly.LayerCommentBoxUpdate(name);
+			Blockly.LayerCommentBoxListerners();
+		}
+	}
+}
+
+Blockly.LayerCommentBoxListerners = function (){//makes LayerCommentBox dragable
+  document.getElementById('layercommentboxtitle').addEventListener('mousedown', LCBmouseDown, false);
+  window.addEventListener('mouseup', LCBmouseUp, false);
+}
+function LCBmouseUp()
+{
+  window.removeEventListener('mousemove', LCBMove, true);
+}
+function LCBmouseDown(e){
+  window.addEventListener('mousemove', LCBMove, true);
+}
+function LCBMove(e){
+  var LCB = document.getElementById('layercommentbox');
+  LCB.style.position = 'absolute';
+  LCB.style.top = e.clientY + 'px';
+  LCB.style.left = e.clientX + 'px';
+}
+
+Blockly.LayerCommentBoxUpdate = function(name){
+	//update the LayerCommentBox to the selected Layer
+	var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
+	var targetlayer = name;
+	for (var j = 0; j < topblocks.length; j++) {
+		if(targetlayer === topblocks[j].layerLabel){
+			var layerLabel=topblocks[j].layerLabel;
+			var layerComment=topblocks[j].layerComment;
+			document.querySelector('#layercommentboxtitle').innerHTML = "LayerComment : "+layerLabel;
+			document.querySelector('#layercommentboxcontent').innerHTML = layerComment;
+			document.querySelector('#layercommentupdatebutton').setAttribute('onclick', ('Blockly.UpdateLayerComment("'+name+'");'));	
+		}
+	}
+	
+	
+}
+
+Blockly.UpdateLayerComment = function(name){
+	//update the selected Layer's layerComment
+	var comment = prompt("comment","");
+	if(comment!=""){
+		var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
+		var targetlayer = name;
+		for (var j = 0; j < topblocks.length; j++) {
+			if(targetlayer === topblocks[j].layerLabel){
+				topblocks[j].setLayerComment(comment);			
+				Blockly.CommentByLayer(name);
+			}
+		}
+	}
+}
+
+Blockly.CloseLayerComment=function(){
+	//close the LayerCommentBox
+	var layercommentbox = document.querySelector("#layercommentbox");
+	layercommentbox.parentNode.removeChild(layercommentbox);
 }
