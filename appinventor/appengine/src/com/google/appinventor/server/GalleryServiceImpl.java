@@ -38,7 +38,6 @@ import com.google.appinventor.shared.rpc.project.GalleryAppListResult;
 import com.google.appinventor.shared.rpc.project.GalleryAppReport;
 import com.google.appinventor.shared.rpc.project.GalleryComment;
 import com.google.appinventor.shared.rpc.project.GalleryModerationAction;
-import com.google.appinventor.shared.rpc.project.GalleryReportListResult;
 import com.google.appinventor.shared.rpc.project.GalleryService;
 import com.google.appinventor.shared.rpc.project.GallerySettings;
 import com.google.appinventor.shared.rpc.project.ProjectSourceZip;
@@ -374,7 +373,7 @@ public class GalleryServiceImpl extends OdeRemoteServiceServlet implements Galle
   * @return the list of reports
   */
   @Override
-  public GalleryReportListResult getRecentReports(int start, int count) {
+  public List<GalleryAppReport> getRecentReports(int start, int count) {
     return galleryStorageIo.getAppReports(start,count);
 
   }
@@ -385,7 +384,7 @@ public class GalleryServiceImpl extends OdeRemoteServiceServlet implements Galle
   * @return the list of reports
   */
   @Override
-  public GalleryReportListResult getAllAppReports(int start, int count){
+  public List<GalleryAppReport> getAllAppReports(int start, int count){
     return galleryStorageIo.getAllAppReports(start,count);
   }
 

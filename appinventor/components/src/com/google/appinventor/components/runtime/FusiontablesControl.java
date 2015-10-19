@@ -130,9 +130,7 @@ import java.util.ArrayList;
     "android.permission.ACCOUNT_MANAGER," +
     "android.permission.MANAGE_ACCOUNTS," +
     "android.permission.GET_ACCOUNTS," +
-    "android.permission.USE_CREDENTIALS," +
-    "android.permission.WRITE_EXTERNAL_STORAGE," +
-    "android.permission.READ_EXTERNAL_STORAGE")
+    "android.permission.USE_CREDENTIALS")
 @UsesLibraries(libraries =
     "fusiontables.jar," +
     "google-api-client-beta.jar," +
@@ -784,7 +782,7 @@ public class FusiontablesControl extends AndroidNonvisibleComponent implements C
 
     @Override
     protected void onPreExecute() {
-      dialog.setMessage("Please wait loading...");
+      dialog.setMessage("Fusiontables...");
       dialog.show();
     }
 

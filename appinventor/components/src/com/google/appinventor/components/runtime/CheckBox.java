@@ -219,20 +219,20 @@ public final class CheckBox extends AndroidViewComponent
   }
 
   /**
-   * Returns the checkbox's text's font size, measured in sp(scale-independent pixels).
+   * Returns the checkbox's text's font size, measured in pixels.
    *
-   * @return  font size in sp (scale-independent pixels)
+   * @return  font size in pixel
    */
   @SimpleProperty(
       category = PropertyCategory.APPEARANCE)
   public float FontSize() {
-    return TextViewUtil.getFontSize(view, container.$context());
+    return TextViewUtil.getFontSize(view);
   }
 
   /**
-   * Specifies the checkbox's text's font size, measured in sp(scale-independent pixels).
+   * Specifies the checkbox's text's font size, measured in pixels.
    *
-   * @param size  font size in sp(scale-independent pixels)
+   * @param size  font size in pixel
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_FLOAT,
       defaultValue = Component.FONT_DEFAULT_SIZE + "")

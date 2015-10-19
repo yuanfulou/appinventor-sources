@@ -92,7 +92,6 @@ Blockly.parseOptions_ = function(options) {
   if (readOnly) {
     var hasCategories = false;
     var hasTrashcan = false;
-    var hasBackpack = false;
     var hasCollapse = false;
     var hasComments = false;
     var hasDisable = false;
@@ -110,10 +109,6 @@ Blockly.parseOptions_ = function(options) {
       hasCollapse = hasCategories;
     }
     var configForTypeBlock = options['typeblock_config'];
-    var hasBackpack = options['backpack'];
-    if (hasBackpack === undefined) {
-      hasBackpack = hasCategories;
-    }
     var hasComments = options['comments'];
     if (hasComments === undefined) {
       hasComments = hasCategories;
@@ -145,7 +140,6 @@ Blockly.parseOptions_ = function(options) {
   Blockly.hasCategories = hasCategories;
   Blockly.hasScrollbars = hasScrollbars;
   Blockly.hasTrashcan = hasTrashcan;
-  Blockly.hasBackpack = hasBackpack;
   Blockly.languageTree = tree;
   Blockly.configForTypeBlock = configForTypeBlock;
   Blockly.enableRealtime = enableRealtime;
@@ -184,7 +178,6 @@ Blockly.createDom_ = function(container) {
     'xmlns:html': 'http://www.w3.org/1999/xhtml',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     'version': '1.1',
-    'id': 'blockly_Svg',
     'class': 'blocklySvg'
   }, null);
   /*
@@ -242,14 +235,6 @@ Blockly.createDom_ = function(container) {
   feMerge = Blockly.createSvgElement('feMerge', {}, filter);
   Blockly.createSvgElement('feMergeNode', {'in': 'offsetBlur'}, feMerge);
   Blockly.createSvgElement('feMergeNode', {'in': 'SourceGraphic'}, feMerge);
-
-  filter = Blockly.createSvgElement('filter',
-      {'id': 'blocklyBackpackShadowFilter'}, defs);
-  Blockly.createSvgElement('feGaussianBlur',
-      {'in': 'SourceAlpha', 'stdDeviation': 2, 'result': 'blur'}, filter);
-  Blockly.createSvgElement('feOffset',
-      {'in': 'blur', 'dx': 1, 'dy': 1, 'result': 'offsetBlur'}, filter);
-
   /*
     <filter id="blocklyShadowFilter">
       <feGaussianBlur stdDeviation="2"/>
@@ -440,9 +425,7 @@ Blockly.init_ = function() {
   }
 
   Blockly.mainWorkspace.addTrashcan();
-  Blockly.mainWorkspace.addBackpack();
   Blockly.mainWorkspace.addWarningIndicator(Blockly.mainWorkspace);
-  //  Blockly.mainWorkspace.addBackpack(Blockly.getMainWorkspaceMetrics);
 
   // Load the sounds.
   Blockly.loadAudio_(

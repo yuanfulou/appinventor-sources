@@ -24,19 +24,6 @@ public final class ViewUtil {
   private ViewUtil() {
   }
 
-  /**
-   * Calculate the device dependent pixels to render this view. The size in the designer is given
-   * in Density Independent Pixels, and we need to transform that to real pixels depending on the
-   * device running the app. The formula is simple: "pixel_size * density".
-   * @param view the view is needed to grab the Context object
-   * @param sizeInDP the size (in DP) specified in the designer
-   * @return size in Pixels for the particular device running the app.
-   */
-  private static int calculatePixels(View view, int sizeInDP) {
-    return (int) (view.getContext().getResources().getDisplayMetrics().density * sizeInDP);
-  }
-
-
   public static void setChildWidthForHorizontalLayout(View view, int width) {
     // In a horizontal layout, if a child's width is set to fill parent, we must set the
     // LayoutParams width to 0 and the weight to 1. For other widths, we set the weight to 0
@@ -53,7 +40,7 @@ public final class ViewUtil {
           linearLayoutParams.weight = 1;
           break;
         default:
-          linearLayoutParams.width = calculatePixels(view, width);
+          linearLayoutParams.width = width;
           linearLayoutParams.weight = 0;
           break;
       }
@@ -77,7 +64,7 @@ public final class ViewUtil {
           linearLayoutParams.height = LinearLayout.LayoutParams.FILL_PARENT;
           break;
         default:
-          linearLayoutParams.height = calculatePixels(view, height);
+          linearLayoutParams.height = height;
           break;
       }
       view.requestLayout();
@@ -100,10 +87,9 @@ public final class ViewUtil {
           linearLayoutParams.width = LinearLayout.LayoutParams.FILL_PARENT;
           break;
         default:
-          linearLayoutParams.width = calculatePixels(view, width);
+          linearLayoutParams.width = width;
           break;
       }
-//      System.err.println("ViewUtil: setChildWidthForVerticalLayout: view = " + view + " width = " + width);
       view.requestLayout();
     } else {
       Log.e("ViewUtil", "The view does not have linear layout parameters");
@@ -126,7 +112,7 @@ public final class ViewUtil {
           linearLayoutParams.weight = 1;
           break;
         default:
-          linearLayoutParams.height = calculatePixels(view, height);
+          linearLayoutParams.height = height;
           linearLayoutParams.weight = 0;
           break;
       }
@@ -148,7 +134,7 @@ public final class ViewUtil {
           tableLayoutParams.width = TableRow.LayoutParams.FILL_PARENT;
           break;
         default:
-          tableLayoutParams.width = calculatePixels(view, width);
+          tableLayoutParams.width = width;
           break;
       }
       view.requestLayout();
@@ -169,7 +155,7 @@ public final class ViewUtil {
           tableLayoutParams.height = TableRow.LayoutParams.FILL_PARENT;
           break;
         default:
-          tableLayoutParams.height = calculatePixels(view, height);
+          tableLayoutParams.height = height;
           break;
       }
       view.requestLayout();

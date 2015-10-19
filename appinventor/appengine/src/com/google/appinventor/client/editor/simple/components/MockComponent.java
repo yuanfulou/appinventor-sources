@@ -84,8 +84,7 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
   protected static final List<String> YAIL_NAMES = Arrays.asList("CsvUtil", "Double", "Float",
     "Integer", "JavaCollection", "JavaIterator", "KawaEnvironment", "Long", "Short",
     "SimpleForm", "String", "Pattern", "YailList", "YailNumberToString", "YailRuntimeError");
-  private static final int ICON_IMAGE_WIDTH = 16;
-  private static final int ICON_IMAGE_HEIGHT = 16;
+
   public static final int BORDER_SIZE = 2 + 2; // see ode-SimpleMockComponent in Ya.css
 
   /**
@@ -160,7 +159,6 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
         getForm().fireComponentRenamed(MockComponent.this, oldName);
       } else {
         newNameTextBox.setFocus(true);
-        newNameTextBox.selectAll();
       }
     }
 
@@ -203,7 +201,6 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
         @Override
         public void execute() {
           newNameTextBox.setFocus(true);
-          newNameTextBox.selectAll();
         }
       });
     }
@@ -256,7 +253,7 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
       public void onSelected() {
         // are we showing the blocks editor? if so, toggle the component drawer
         if (Ode.getInstance().getCurrentFileEditor() instanceof YaBlocksEditor) {
-          YaBlocksEditor blocksEditor =
+          YaBlocksEditor blocksEditor = 
               (YaBlocksEditor) Ode.getInstance().getCurrentFileEditor();
           OdeLog.log("Showing item " + getName());
           blocksEditor.showComponentBlocks(getName());
@@ -383,9 +380,7 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
    * Returns a unique default component name.
    */
   private String componentName() {
-    String compType = TranslationDesignerPallete.getCorrespondingString(getType());
-    compType = compType.replace(" ", "_").replace("'", "_"); // Make sure it doesn't have any spaces in it
-    return compType + getNextComponentIndex();
+    return TranslationDesignerPallete.getCorrespondingString(getType()) + getNextComponentIndex();
   }
 
   /**
@@ -406,10 +401,7 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
   private int getNextComponentIndex() {
     int highIndex = 0;
     if (editor != null) {
-      final String typeName = TranslationDesignerPallete.getCorrespondingString(getType())
-        .toLowerCase()
-        .replace(" ", "_")
-        .replace("'", "_");
+      final String typeName = TranslationDesignerPallete.getCorrespondingString(getType()).toLowerCase();
       final int nameLength = typeName.length();
       for (String cName : editor.getComponentNames()) {
         cName = cName.toLowerCase();
@@ -674,13 +666,13 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
     // used to get HTML for the iconImage. AbstractImagePrototype requires
     // an ImageResource, which we don't necessarily have.
     String imageHTML = new ClippedImagePrototype(iconImage.getUrl(), iconImage.getOriginLeft(),
-        iconImage.getOriginTop(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT).getHTML();
+        iconImage.getOriginTop(), iconImage.getWidth(), iconImage.getHeight()).getHTML();
     TreeItem itemNode = new TreeItem(
         new HTML("<span>" + imageHTML + getName() + "</span>"));
     itemNode.setUserObject(sourceStructureExplorerItem);
     return itemNode;
   }
-
+  
   /**
    * If this component isn't a Form, and this component's type isn't already in typesAndIcons,
    * adds this component's type name as a key to typesAndIcons, mapped to the HTML string used
@@ -692,7 +684,7 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
     String name = getVisibleTypeName();
     if (!isForm() && !typesAndIcons.containsKey(name)) {
       String imageHTML = new ClippedImagePrototype(iconImage.getUrl(), iconImage.getOriginLeft(),
-          iconImage.getOriginTop(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT).getHTML();
+          iconImage.getOriginTop(), iconImage.getWidth(), iconImage.getHeight()).getHTML();
       typesAndIcons.put(name, imageHTML);
     }
   }
@@ -713,7 +705,7 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
   protected ProjectNode getAssetNode(String name) {
     Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
     if (project != null) {
-      HasAssetsFolder<YoungAndroidAssetsFolder> hasAssetsFolder =
+      HasAssetsFolder<YoungAndroidAssetsFolder> hasAssetsFolder = 
           (YoungAndroidProjectNode) project.getRootNode();
       for (ProjectNode asset : hasAssetsFolder.getAssetsFolder().getChildren()) {
         if (asset.getName().equals(name)) {

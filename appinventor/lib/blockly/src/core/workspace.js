@@ -32,7 +32,6 @@ goog.require('Blockly.Instrument'); // lyn's instrumentation code
 // goog.require('Blockly.Block');
 goog.require('Blockly.ScrollbarPair');
 goog.require('Blockly.Trashcan');
-goog.require('Blockly.Backpack');
 goog.require('Blockly.Xml');
 
 
@@ -99,12 +98,6 @@ Blockly.Workspace.prototype.trashcan = null;
 Blockly.Workspace.prototype.warningIndicator = null;
 
 /**
- * The workspace's backpack (if any).
- * @type {Blockly.Backpack}
- */
-Blockly.Backpack.prototype.backpack = null;
-
-/**
  * PID of upcoming firing of a change event.  Used to fire only one event
  * after multiple changes.
  * @type {?number}
@@ -156,10 +149,6 @@ Blockly.Workspace.prototype.dispose = function() {
     this.warningIndicator.dispose();
     this.warningIndicator = null;
   }
-  if (this.backpack) {
-    this.backpack.dispose();
-    this.backpack = null;
-  }
 };
 
 /**
@@ -184,19 +173,6 @@ Blockly.Workspace.prototype.addWarningIndicator = function(getMetrics) {
     var svgWarningIndicator = this.warningIndicator.createDom();
     this.svgGroup_.insertBefore(svgWarningIndicator, this.svgBlockCanvas_);
     this.warningIndicator.init();
-  }
-};
-
-/**
- * Add a backpack.
- * @param {!Function} getMetrics A function that returns workspace's metrics.
- */
-Blockly.Workspace.prototype.addBackpack = function(getMetrics) {
-  if (Blockly.Backpack && !Blockly.readOnly) {
-    this.backpack = new Blockly.Backpack(this);
-    var svgBackpack = this.backpack.createDom();
-    this.svgGroup_.insertBefore(svgBackpack, this.svgBlockCanvas_);
-    this.backpack.init();
   }
 };
 

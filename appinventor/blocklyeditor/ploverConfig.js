@@ -10,9 +10,7 @@
     './src/msg/es_es/_messages.js',
     './src/msg/zh_tw/_messages.js',
     './src/msg/zh_cn/_messages.js',
-    './src/msg/fr_fr/_messages.js',
     './src/msg/it_it/_messages.js',
-    './src/msg/ru/_messages.js',
     './src/msg/en/_messages.js',
 
     // Lyn's instrumentation code
@@ -43,6 +41,8 @@
     '../lib/blockly/src/core/icon.js',
     '../lib/blockly/src/core/inject.js',
     '../lib/blockly/src/core/input.js',
+	//Layer
+    '../lib/blockly/src/core/layer.js',
     '../lib/blockly/src/core/msg.js',
     '../lib/blockly/src/core/mutator.js',
     '../lib/blockly/src/core/names.js',
@@ -79,7 +79,6 @@
     "./src/field_procedure.js",
     "./src/field_textblockinput.js",
     "./src/warningIndicator.js",
-    "./src/exportBlocksImage.js",
     "./src/flydown.js",
     "./src/field_flydown.js",
     "./src/field_parameter_flydown.js",
@@ -88,13 +87,6 @@
     "./src/nameSet.js",
     "./src/substitution.js",
     "./src/language_switch.js",
-
-    // Dialog Utiltiy
-    "./src/util.js",
-
-    // backpack files
-    "./src/backpack.js",
-    "./src/backpackFlyout.js",
 
     //blocks files
     './src/blocks/control.js',

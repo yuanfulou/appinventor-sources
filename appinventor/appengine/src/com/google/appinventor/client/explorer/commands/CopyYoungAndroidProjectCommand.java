@@ -187,7 +187,6 @@ public final class CopyYoungAndroidProjectCommand extends ChainableCommand {
         copyProjectAction(oldProjectNode, newProjectName);
       } else {
         newNameTextBox.setFocus(true);
-        newNameTextBox.selectAll();
       }
     }
 
@@ -253,7 +252,6 @@ public final class CopyYoungAndroidProjectCommand extends ChainableCommand {
         @Override
         public void execute() {
           newNameTextBox.setFocus(true);
-          newNameTextBox.selectAll();
         }
       });
     }

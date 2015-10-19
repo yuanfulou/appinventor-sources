@@ -68,9 +68,7 @@ import java.util.Map;
     nonVisible = true,
     iconName = "images/web.png")
 @SimpleObject
-@UsesPermissions(permissionNames = "android.permission.INTERNET," +
-  "android.permission.WRITE_EXTERNAL_STORAGE," +
-  "android.permission.READ_EXTERNAL_STORAGE")
+@UsesPermissions(permissionNames = "android.permission.INTERNET")
 @UsesLibraries(libraries = "json.jar")
 
 
@@ -360,7 +358,6 @@ public class Web extends AndroidNonvisibleComponent implements Component {
           form.dispatchErrorOccurredEvent(Web.this, "Get",
               e.getErrorMessageNumber());
         } catch (Exception e) {
-          Log.e(LOG_TAG, "ERROR_UNABLE_TO_GET", e);
           form.dispatchErrorOccurredEvent(Web.this, "Get",
               ErrorMessages.ERROR_WEB_UNABLE_TO_GET, webProps.urlString);
         }

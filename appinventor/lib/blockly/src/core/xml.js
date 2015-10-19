@@ -124,6 +124,12 @@ Blockly.Xml.blockToDom_ = function(block) {
   if (block.isCollapsed()) {
     element.setAttribute('collapsed', true);
   }
+  if (block.layerLabel!=null) {//LayerLabel
+    element.setAttribute('layerlabel', block.layerLabel);
+  }
+  if (block.layerComment!=null) {//LayerComment
+    element.setAttribute('layercomment', block.layerComment);
+  }
   if (block.disabled) {
     element.setAttribute('disabled', true);
   }
@@ -493,6 +499,14 @@ Blockly.Xml.domToBlockInner = function(workspace, xmlBlock, opt_reuseBlock) {
   var collapsed = xmlBlock.getAttribute('collapsed');
   if (collapsed) {
     block.setCollapsed(collapsed == 'true');
+  }
+  var layerLabel = xmlBlock.getAttribute('layerlabel');
+  if (layerLabel) {
+    block.setLayerLabel(layerLabel);
+  }
+  var layerComment = xmlBlock.getAttribute('layercomment');
+  if (layerComment) {
+    block.setLayerComment(layerComment);
   }
   return block;
 };

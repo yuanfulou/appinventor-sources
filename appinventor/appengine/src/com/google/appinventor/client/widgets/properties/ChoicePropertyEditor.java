@@ -6,19 +6,15 @@
 
 package com.google.appinventor.client.widgets.properties;
 
-import com.google.appinventor.client.widgets.DropDownButton;
-import static com.google.appinventor.client.widgets.DropDownButton.DropDownItem;
-
-import com.google.common.collect.Lists;
-import com.google.gwt.user.client.Command;
-
-import java.util.List;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * Property editor for a list of values.
  *
  */
-public class ChoicePropertyEditor extends PropertyEditor {
+public class ChoicePropertyEditor extends PropertyEditor implements ChangeHandler {
 
   /**
    * Caption/value pair for display in {@link ChoicePropertyEditor}.
@@ -69,8 +65,8 @@ public class ChoicePropertyEditor extends PropertyEditor {
     }
   }
 
-  // UI for the drop-down list of values will be represented by a DropDownButton
-  private final DropDownButton dropDownButton;
+  // UI for the list of values will be represented by a ListBox
+  private final ListBox listbox;
 
   // Array of choices
   private Choice[] choices;
@@ -82,57 +78,59 @@ public class ChoicePropertyEditor extends PropertyEditor {
    */
   public ChoicePropertyEditor(Choice[] choices) {
     // Initialize UI
-    this.choices = choices;
-    List<DropDownItem> items = Lists.newArrayList();
-    for(final Choice choice : choices) {
-      items.add(new DropDownItem("Choice Property Editor", choice.caption, new Command() {
-        @Override
-        public void execute() {
-          property.setValue(choice.value);
-        }
-      }));
-    }
-    dropDownButton = new DropDownButton("Choice Property Editor", choices[0].caption, items, false);
-    dropDownButton.setStylePrimaryName("ode-ChoicePropertyEditor");
+    listbox = new ListBox();
+    listbox.setVisibleItemCount(1);
+    listbox.addChangeHandler(this);
 
-    initWidget(dropDownButton);
+    initWidget(listbox);
+
+    updateChoices(choices);
+  }
+
+  /**
+   * Updates the list of available choices.
+   *
+   * @param choices  list of values to choose from
+   */
+  public void updateChoices(Choice[] choices) {
+    this.choices = choices;
+
+    // Propagate values into listbox
+    listbox.clear();
+    for (Choice choice : choices) {
+      listbox.addItem(choice.caption);
+    }
   }
 
   @Override
   protected void updateValue() {
     String propertyValue = property.getValue();
-    for (Choice choice : choices) {
-      String choiceValue = choice.value;
+    for (int i = 0; i < choices.length; i++) {
+      String choiceValue = choices[i].value;
       if (choiceValue.equals(propertyValue)) {
-        dropDownButton.setCaption(choice.caption);
+        listbox.setItemSelected(i, true);
       }
     }
   }
   
   /**
    * Enables the dropdown selector for this property
-   */
+   */ 
   public void enable() {
-    for (Choice c : choices) {
-      dropDownButton.setItemEnabled(c.caption, true);
-    }
+    listbox.setEnabled(true);
   }
-
+  
   /**
    * Disables the dropdown selector for this property
-   */
+   */ 
   public void disable() {
-    String currentValue = property.getValue();
-    for (Choice c : choices) {
-      if(!c.value.equals(currentValue)) {
-        dropDownButton.setItemEnabled(c.caption, false);
-      } else {
-        dropDownButton.setItemEnabled(c.caption, true);
-      }
-    }
+    listbox.setEnabled(false);
   }
 
-  public void setVisible(boolean visible) {
-    dropDownButton.setVisible(visible);
+  // ChangeHandler implementation
+
+  @Override
+  public void onChange(ChangeEvent event) {
+    property.setValue(choices[listbox.getSelectedIndex()].value);
   }
 }

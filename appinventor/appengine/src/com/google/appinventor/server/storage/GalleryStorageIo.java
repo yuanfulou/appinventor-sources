@@ -16,7 +16,6 @@ import com.google.appinventor.shared.rpc.project.GalleryAppReport;
 import com.google.appinventor.shared.rpc.project.GalleryComment;
 import com.google.appinventor.shared.rpc.project.GalleryCommentReport;
 import com.google.appinventor.shared.rpc.project.GalleryModerationAction;
-import com.google.appinventor.shared.rpc.project.GalleryReportListResult;
 
 
 
@@ -251,21 +250,19 @@ public interface GalleryStorageIo {
   List<GalleryAppReport> getAppReports(long galleryId, int start, int count);
 
   /**
-   * Returns a wrapped class which contains a list of reports (flags) for unresolved app
-   * and total number of results in database
+   * Returns a list of reports (flags) for all app
    * @param start start index
    * @param count number to return
    * @return list of {@link GalleryAppReport}
    */
-  GalleryReportListResult getAppReports(int start, int count);
+  List<GalleryAppReport> getAppReports(int start, int count);
   /**
-  * Returns a wrapped class which contains a list of reports (flags) for resolved and unresolved app
-  * and total number of results in database
+  * gets existing reports
   * @param start start index
   * @param count number to retrieve
   * @return the list of reports
   */
-  GalleryReportListResult getAllAppReports(int start, int count);
+  List<GalleryAppReport> getAllAppReports(int start, int count);
   /**
    * adds a report (flag) to a gallery app comment
    * @param commentId id of comment that was reported

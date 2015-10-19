@@ -292,20 +292,20 @@ public abstract class TextBoxBase extends AndroidViewComponent
   }
 
   /**
-   * Returns the textbox's text's font size, measured in sp(scale-independent pixels).
+   * Returns the textbox's text's font size, measured in pixels.
    *
-   * @return  font size in sp(scale-independent pixels).
+   * @return  font size in pixel
    */
   @SimpleProperty(
       category = PropertyCategory.APPEARANCE,
       description = "The font size for the text.  By default, it is " +
       Component.FONT_DEFAULT_SIZE + " points.")
   public float FontSize() {
-    return TextViewUtil.getFontSize(view, container.$context());
+    return TextViewUtil.getFontSize(view);
   }
 
   /**
-   * Specifies the textbox's text's font size, measured in sp(scale-independent pixels).
+   * Specifies the textbox's text's font size, measured in pixels.
    *
    * @param size  font size in pixel
    */

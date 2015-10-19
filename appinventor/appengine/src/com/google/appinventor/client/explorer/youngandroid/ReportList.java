@@ -7,8 +7,6 @@
 package com.google.appinventor.client.explorer.youngandroid;
 
 
-import static com.google.appinventor.client.Ode.MESSAGES;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +22,6 @@ import com.google.appinventor.client.widgets.DropDownButton.DropDownItem;
 import com.google.appinventor.shared.rpc.project.Email;
 import com.google.appinventor.shared.rpc.project.GalleryAppReport;
 import com.google.appinventor.shared.rpc.project.GalleryModerationAction;
-import com.google.appinventor.shared.rpc.project.GalleryReportListResult;
 import com.google.appinventor.shared.rpc.user.User;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
@@ -67,17 +64,12 @@ public class ReportList extends Composite  {
 
   // UI elements
   private final Grid table;
-  private final Label buttonNext;
 
   public static final OdeMessages MESSAGES = GWT.create(OdeMessages.class);
 
   public static final int EMAIL_INAPPROPRIATE_APP_CONTENT_REMOVE = 1;
   public static final int EMAIL_INAPPROPRIATE_APP_CONTENT = 2;
   public static final int EMAIL_INAPPROPRIATE_USER_PROFILE_CONTENT = 3;
-
-  public static final int NUMREPORTSSHOW = 10;
-  private int reportRecentCounter = 0;
-  private int reportAllRecentCounter = 0;
 
   /**
    * Creates a new ProjectList
@@ -95,10 +87,6 @@ public class ReportList extends Composite  {
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event) {
         boolean isChecked = event.getValue(); // auto-unbox from Boolean to boolean
-        //reset start position
-        reportAllRecentCounter = 0;
-        reportRecentCounter = 0;
-        buttonNext.setVisible(true);
         if (isChecked) {
           initializeAllReports();
         } else {
@@ -119,43 +107,9 @@ public class ReportList extends Composite  {
     table.setWidth("100%");
     table.setCellSpacing(0);
 
-    buttonNext = new Label();
-    buttonNext.setText(MESSAGES.galleryMoreReports());
-
-    buttonNext.addClickHandler(new ClickHandler() {
-      //  @Override
-      public void onClick(ClickEvent event) {
-        final OdeAsyncCallback<GalleryReportListResult> callback = new OdeAsyncCallback<GalleryReportListResult>(
-            // failure message
-            MESSAGES.galleryError()) {
-              @Override
-              public void onSuccess(GalleryReportListResult reportListResult) {
-                List<GalleryAppReport> reportList = reportListResult.getReports();
-                reports.addAll(reportList);
-                for (GalleryAppReport report : reportList) {
-                  ReportWidgets.put(report, new ReportWidgets(report));
-                }
-                refreshTable(reportListResult, false);
-              }
-          };
-          if(checkBox.isChecked()){
-            reportAllRecentCounter += NUMREPORTSSHOW;
-            Ode.getInstance().getGalleryService().getAllAppReports(reportAllRecentCounter,NUMREPORTSSHOW,callback);
-          }else{
-            reportRecentCounter += NUMREPORTSSHOW;
-            Ode.getInstance().getGalleryService().getRecentReports(reportRecentCounter,NUMREPORTSSHOW,callback);
-          }
-      }
-    });
-
     setHeaderRow();
 
     panel.add(table);
-    FlowPanel next = new FlowPanel();
-    buttonNext.addStyleName("active");
-    next.add(buttonNext);
-    next.addStyleName("gallery-report-next");
-    panel.add(next);
     initWidget(panel);
 
     initializeReports();
@@ -205,42 +159,40 @@ public class ReportList extends Composite  {
    * initialize reports, only including solved reports
    */
   private void initializeReports() {
-    final OdeAsyncCallback<GalleryReportListResult> callback = new OdeAsyncCallback<GalleryReportListResult>(
+    final OdeAsyncCallback<List<GalleryAppReport>> callback = new OdeAsyncCallback<List<GalleryAppReport>>(
       // failure message
       MESSAGES.galleryError()) {
         @Override
-        public void onSuccess(GalleryReportListResult reportListResult) {
-          List<GalleryAppReport> reportList = reportListResult.getReports();
+        public void onSuccess(List<GalleryAppReport> reportList) {
           reports=reportList;
           ReportWidgets.clear();
           for (GalleryAppReport report : reports) {
             ReportWidgets.put(report, new ReportWidgets(report));
           }
-          refreshTable(reportListResult, true);
+          refreshTable();
         }
     };
-    Ode.getInstance().getGalleryService().getRecentReports(reportRecentCounter,NUMREPORTSSHOW,callback);
+    Ode.getInstance().getGalleryService().getRecentReports(0,10,callback);
   }
 
   /**
    * initialize all reports, including both solved and unsolved reports
    */
   private void initializeAllReports() {
-    final OdeAsyncCallback<GalleryReportListResult> callback = new OdeAsyncCallback<GalleryReportListResult>(
+    final OdeAsyncCallback<List<GalleryAppReport>> callback = new OdeAsyncCallback<List<GalleryAppReport>>(
       // failure message
       MESSAGES.galleryError()) {
         @Override
-        public void onSuccess(GalleryReportListResult reportListResult) {
-          List<GalleryAppReport> reportList = reportListResult.getReports();
+        public void onSuccess(List<GalleryAppReport> reportList) {
           reports=reportList;
           ReportWidgets.clear();
           for (GalleryAppReport report : reports) {
             ReportWidgets.put(report, new ReportWidgets(report));
           }
-          refreshTable(reportListResult, true);
+          refreshTable();
         }
       };
-    Ode.getInstance().getGalleryService().getAllAppReports(reportAllRecentCounter,NUMREPORTSSHOW,callback);
+    Ode.getInstance().getGalleryService().getAllAppReports(0,10,callback);
   }
   /**
    * Helper wrapper Class of Report Widgets
@@ -265,8 +217,6 @@ public class ReportList extends Composite  {
 
       reportTextLabel = new Label(report.getReportText());
       reportTextLabel.addStyleName("ode-ProjectNameLabel");
-      reportTextLabel.setWordWrap(true);
-      reportTextLabel.setWidth("200px");
 
       appLabel = new Label(report.getApp().getTitle());
       appLabel.addStyleName("primary-link");
@@ -295,22 +245,12 @@ public class ReportList extends Composite  {
    * refresh report list table
    * Update the information of reports
    */
-  private void refreshTable(GalleryReportListResult reportListResult, boolean refreshable) {
-    int row;
-    List<GalleryAppReport> incomingReports = reportListResult.getReports();
-    if(refreshable){
-      table.clear();
-      table.resize(1+incomingReports.size(), 9);
-      setHeaderRow();
-      row = 1;
-    }else{
-      int nextRow = table.getRowCount();
-      table.resize(1+reports.size(), 9);
-      row = nextRow;
-    }
+  private void refreshTable() {
 
     // Refill the table.
-    for (GalleryAppReport report : incomingReports) {
+    table.resize(1 + reports.size(), 9);
+    int row = 1;
+    for (GalleryAppReport report : reports) {
       ReportWidgets rw = ReportWidgets.get(report);
       table.setWidget(row, 0, rw.reportTextLabel);
       table.setWidget(row, 1, rw.appLabel);
@@ -324,10 +264,8 @@ public class ReportList extends Composite  {
       prepareGalleryAppReport(report, rw);
       row++;
     }
-    //if the total num of row - 1(head row) == total count of reports, there are no more results
-    if(table.getRowCount()-1 == reportListResult.getTotalCount()){
-      buttonNext.setVisible(false);
-    }
+
+    Ode.getInstance().getProjectToolbar().updateButtons();
   }
 
   /**
@@ -511,7 +449,7 @@ public class ReportList extends Composite  {
   public void onReportAdded(GalleryAppReport report) {
     reports.add(report);
     ReportWidgets.put(report, new ReportWidgets(report));
-    refreshTable(new GalleryReportListResult(reports, reports.size()), true);
+    refreshTable();
   }
   /**
    * Method when removed gallery app report
@@ -520,7 +458,7 @@ public class ReportList extends Composite  {
   public void onReportRemoved(GalleryAppReport report) {
     reports.remove(report);
     ReportWidgets.remove(report);
-    refreshTable(new GalleryReportListResult(reports, reports.size()), true);
+    refreshTable();
     selectedGalleryAppReports.remove(report);
   }
   /**

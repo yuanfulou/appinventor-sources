@@ -18,10 +18,6 @@ import com.google.gwt.i18n.client.Messages;
 public interface OdeMessages extends Messages {
   // Used in multiple files
 
-  @DefaultMessage("Default")
-  @Description("Text for property editors")
-  String defaultText();
-
   @DefaultMessage("Cancel")
   @Description("Text on \"Cancel\" button.")
   String cancelButton();
@@ -253,10 +249,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("Previous Actions on Report")
   @Description("Title of the Previous Actions Popup of reportlist")
   String titleSeeAllActionsPopup();
-
-  @DefaultMessage("More Reports")
-  @Description("text for more reports")
-  String galleryMoreReports();
 
   @DefaultMessage("X")
   @Description("Symbol X")
@@ -563,10 +555,6 @@ public interface OdeMessages extends Messages {
   @Description("Information about the Companion")
   String companionInformation();
 
-  @DefaultMessage("Show Splash Screen")
-  @Description("Redisplay the Splash Screen")
-  String showSplashMenuItem();
-
   @DefaultMessage("Library")
   @Description("Name of Library link")
   String libraryMenuItem();
@@ -812,14 +800,6 @@ public interface OdeMessages extends Messages {
   @Description("Checkbox controlling whether to display invisible components in the designer.")
   String showHiddenComponentsCheckbox();
 
-  @DefaultMessage("Check to see Preview on Tablet size.")
-  @Description("Checkbox (check) controlling whether to display a preview on Tablet size.")
-  String previewTabletSize();
-
-  @DefaultMessage("Un-check to see Preview on Phone size.")
-  @Description("Checkbox (un-check) controlling whether to display a preview on Phone size.")
-  String previewPhoneSize();
-
   // Used in editor/simple/components/MockComponent.java
 
   @DefaultMessage("Rename Component")
@@ -928,16 +908,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("strong")
   @Description("Text for accelerometer sensitivity choice 'strong'")
   String strongAccelerometerSensitivity();
-
-  // Used in editor/youngandroid/properties/YoungAndroidSizingChoicePropertyEditor.java
-
-  @DefaultMessage("Fixed")
-  @Description("Text for Sizing choice 'fixed' -- scale to fit device screen")
-  String fixedSizing();
-
-  @DefaultMessage("Responsive")
-  @Description("Text for Sizing choice 'responsive' -- size based on device type")
-  String responsiveSizing();
 
   // Used in editor/youngandroid/properties/YoungAndroidAlignmentChoicePropertyEditor.java
 
@@ -1103,10 +1073,6 @@ public interface OdeMessages extends Messages {
   @Description("Caption and summary for Fill Parent choice")
   String fillParentCaption();
 
-  @DefaultMessage("percent")
-  @Description("Caption for percent label")
-  String percentCaption();
-
   @DefaultMessage("pixels")
   @Description("Caption for pixels label")
   String pixelsCaption();
@@ -1115,17 +1081,9 @@ public interface OdeMessages extends Messages {
   @Description("Summary for custom length in pixels")
   String pixelsSummary(String pixels);
 
-  @DefaultMessage("{0} percent")
-  @Description("Summary for length in percent")
-  String percentSummary(String percent);
-
-  @DefaultMessage("The value must be an integer greater than or equal to 0")
+  @DefaultMessage("The value must be a number greater than or equal to 0")
   @Description("Error shown after validation of custom length field failed.")
   String nonnumericInputError();
-
-  @DefaultMessage("Percentage input values should be between 1 and 100")
-  @Description("Error shown after validation of percentage input fields.")
-  String nonvalidPercentValue();
 
   // Used in editor/youngandroid/properties/YoungAndroidScreenAnimationChoicePropertyEditor.java
 
@@ -2328,14 +2286,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String AboutScreenProperties();
 
-  @DefaultMessage("ShowStatusBar")
-  @Description("")
-  String ShowStatusBarProperties();
-
-  @DefaultMessage("TitleVisible")
-  @Description("")
-  String TitleVisibleProperties();
-
   @DefaultMessage("AboveRangeEventEnabled")
   @Description("")
   String AboveRangeEventEnabledProperties();
@@ -2472,10 +2422,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String ExtraValueProperties();
 
-  @DefaultMessage("Extras")
-  @Description("")
-  String ExtrasProperties();
-
   @DefaultMessage("FollowLinks")
   @Description("")
   String FollowLinksProperties();
@@ -2535,10 +2481,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("Icon")
   @Description("")
   String IconProperties();
-
-  @DefaultMessage("Instant")
-  @Description("")
-  String InstantProperties();
 
   @DefaultMessage("IgnoreSslErrors")
   @Description("")
@@ -2772,10 +2714,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String VersionNameProperties();
 
-  @DefaultMessage("Sizing")
-  @Description("")
-  String SizingProperties();
-
   @DefaultMessage("Visible")
   @Description("")
   String VisibleProperties();
@@ -3000,10 +2938,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String BallotQuestionProperties();
 
-  @DefaultMessage("ContactUri")
-  @Description("")
-  String ContactUriProperties();
-
   @DefaultMessage("EmailAddress")
   @Description("")
   String EmailAddressProperties();
@@ -3043,10 +2977,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("Height")
   @Description("")
   String HeightProperties();
-
-  @DefaultMessage("HeightPercent")
-  @Description("")
-  String HeightPercentProperties();
 
   @DefaultMessage("InstanceId")
   @Description("")
@@ -3148,10 +3078,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String SelectionIndexProperties();
 
-  @DefaultMessage("uri")
-  @Description("")
-  String uriParams();
-
   @DefaultMessage("UserChoice")
   @Description("")
   String UserChoiceProperties();
@@ -3183,10 +3109,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("Width")
   @Description("")
   String WidthProperties();
-
-  @DefaultMessage("WidthPercent")
-  @Description("")
-  String WidthPercentProperties();
 
   @DefaultMessage("WebViewString")
   @Description("")
@@ -3794,10 +3716,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String AccelerationChangedEvents();
 
-  @DefaultMessage("ActivityCanceled")
-  @Description("")
-  String ActivityCanceledEvents();
-
   @DefaultMessage("AfterActivity")
   @Description("")
   String AfterActivityEvents();
@@ -3861,10 +3779,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("LostFocus")
   @Description("")
   String LostFocusEvents();
-
-  @DefaultMessage("ViewContact")
-  @Description("")
-  String ViewContactMethods();
 
   @DefaultMessage("AfterRecording")
   @Description("")
@@ -4129,10 +4043,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("GotText")
   @Description("")
   String GotTextEvents();
-
-  @DefaultMessage("AfterFileSaved")
-  @Description("")
-  String AfterFileSavedEvents();
 
   @DefaultMessage("AfterDateSet")
   @Description("")
@@ -5042,22 +4952,15 @@ public interface OdeMessages extends Messages {
   @Description("")
   String CheckBoxHelpStringComponentPallette();
 
-  @DefaultMessage("Non-visible component that provides the instant in time "
-    + "using the internal clock on the phone. It can fire a timer at "
-    + "regularly set intervals and perform time calculations, "
-    + "manipulations, and conversions.</p> <p>Methods to convert an "
-    + "instant to text are also available. Acceptable patterns are "
-    + "empty string, MM/DD/YYYY HH:mm:ss a, or MMM d, yyyy "
-    + "HH:mm. The empty string will provide the default format, "
-    + "which is \"MMM d, yyyy HH:mm:ss a\" for FormatDateTime \"MMM "
-    + "d, yyyy\" for FormatDate.  To see all possible format, "
-    + "please see <a "
-    + "href=\"https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html\" "
-    + "target=\"_blank\"> here</a>.")
+  @DefaultMessage("Non-visible component that provides the instant in time"+
+      "using the internal clock on the phone. It can fire a timer at " +
+      "regularly set intervals and perform time calculations, " +
+      "manipulations, and conversions. Methods to format the date and " +
+      "time are also available.")
   @Description("")
   String ClockHelpStringComponentPallette();
 
-  @DefaultMessage("A button that, when clicked on, displays a list of the contacts to choose among. After the user has made a selection, the following properties will be set to information about the chosen contact: <ul>\n<li> <code>ContactName</code>: the contact's name </li>\n <li> <code>EmailAddress</code>: the contact's primary email address </li>\n <li> <code>ContactUri</code>: the contact's URI on the device </li>\n <li> <code>Picture</code>: the name of the file containing the contact's image, which can be used as a <code>Picture</code> property value for the <code>Image</code> or <code>ImageSprite</code> component.</li></ul>\n</p><p>Other properties affect the appearance of the button (<code>TextAlignment</code>, <code>BackgroundColor</code>, etc.) and whether it can be clicked on (<code>Enabled</code>).\n</p><p>Picking is not supported on all phones.  If it fails, this component will show a notification.  The error behavior can be overridden with the Screen.ErrorOccurred event handler.")
+  @DefaultMessage("A button that, when clicked on, displays a list of the contacts to choose among. After the user has made a selection, the following properties will be set to information about the chosen contact: <ul>\n<li> <code>ContactName</code>: the contact\"s name </li>\n <li> <code>EmailAddress</code>: the contact\"s primary email address </li>\n <li> <code>Picture</code>: the name of the file containing the contact\"s image, which can be used as a <code>Picture</code> property value for the <code>Image</code> or <code>ImageSprite</code> component.</li></ul>\n</p><p>Other properties affect the appearance of the button (<code>TextAlignment</code>, <code>BackgroundColor</code>, etc.) and whether it can be clicked on (<code>Enabled</code>).\n</p><p>Picking is not supported on all phones.  If it fails, this component will show a notification.  The error behavior can be overridden with the Screen.ErrorOccurred event handler.")
   @Description("")
   String ContactPickerHelpStringComponentPallette();
 
@@ -5093,7 +4996,7 @@ public interface OdeMessages extends Messages {
   @Description("")
   String ImageHelpStringComponentPallette();
 
-  @DefaultMessage("A special-purpose button. When the user taps an image picker, the device\"s image gallery appears, and the user can choose an image. After an image is picked, it is saved, and the <code>Selected</code> property will be the name of the file where the image is stored. In order to not fill up storage, a maximum of 10 images will be stored.  Picking more images will delete previous images, in order from oldest to newest.")
+  @DefaultMessage("A special-purpose button. When the user taps an image picker, the device\"s image gallery appears, and the user can choose an image. After an image is picked, it is saved on the SD card and the <code>ImageFile</code> property will be the name of the file where the image is stored. In order to not fill up storage, a maximum of 10 images will be stored.  Picking more images will delete previous images, in order from oldest to newest.")
   @Description("")
   String ImagePickerHelpStringComponentPallette();
 
@@ -5185,12 +5088,7 @@ public interface OdeMessages extends Messages {
   @Description("")
   String SharingHelpStringComponentPallette();
 
-  @DefaultMessage("A Slider is a progress bar that adds a draggable thumb. You can touch " +
-        "the thumb and drag left or right to set the slider thumb position. " +
-        "As the Slider thumb is dragged, it will trigger the PositionChanged event, " +
-        "reporting the position of the Slider thumb. The reported position of the " +
-        "Slider thumb can be used to dynamically update another component " +
-        "attribute, such as the font size of a TextBox or the radius of a Ball.")
+  @DefaultMessage("A Slider is a progress bar that adds a draggable thumb. You can touch the thumb and drag left or right to set the slider thumb position. As the Slider thumb is dragged, it will trigger the PositionChanged event, reporting the position of the Slider thumb. The reported position of the Slider thumb can be used to dynamically update another component attribute, such as the font size of a TextBox or the radius of a Ball.")
   @Description("")
   String SliderHelpStringComponentPallette();
 
@@ -5222,7 +5120,7 @@ public interface OdeMessages extends Messages {
   @Description("")
   String TextToSpeechHelpStringComponentPallette();
 
-  @DefaultMessage("<p>A component that will, when the <code>SendMessage</code> method is called, send the text message specified in the <code>Message</code> property to the phone number specified in the <code>PhoneNumber</code> property.</p> <p>If the <code>ReceivingEnabled</code> property is set to 1 messages will <b>not</b> be received. If <code>ReceivingEnabled</code> is set to 2 messages will be received only when the application is running. Finally if <code>ReceivingEnabled</code> is set to 3, messages will be received when the application is running <b>and</b> when the application is not running they will be queued and a notification displayed to the user.</p> <p>When a message arrives, the <code>MessageReceived</code> event is raised and provides the sending number and message.</p> <p> An app that includes this component will receive messages even when it is in the background (i.e. when it is not visible on the screen) and, moreso, even if the app is not running, so long as it is installed on the phone. If the phone receives a text message when the app is not in the foreground, the phone will show a notification in the notification bar.  Selecting the notification will bring up the app.  As an app developer, you will probably want to give your users the ability to control ReceivingEnabled so that they can make the phone ignore text messages.</p> <p>If the GoogleVoiceEnabled property is true, messages can be sent over Wifi using Google Voice. This option requires that the user have a Google Voice account and that the mobile Voice app is installed on the phone. The Google Voice option works only on phones that support Android 2.0 (Eclair) or higher.</p> <p>To specify the phone number (e.g., 650-555-1212), set the <code>PhoneNumber</code> property to a Text string with the specified digits (e.g., 6505551212).  Dashes, dots, and parentheses may be included (e.g., (650)-555-1212) but will be ignored; spaces may not be included.</p> <p>Another way for an app to specify a phone number would be to include a <code>PhoneNumberPicker</code> component, which lets the users select a phone numbers from the ones stored in the the phone contacts.</p>")
+  @DefaultMessage("<p>A component that will, when the <code>SendMessage</code> method is called, send the text message specified in the <code>Message</code> property to the phone number specified in the <code>PhoneNumber</code> property.</p> <p>If the <code>ReceivingEnabled</code> property is set to 1 messages will <b>not</b> be received. If <code>ReceivingEnabled</code> is set to 2 messages will be received only when the application is running. Finally if <code>ReceivingEnabled</code> is set to 3, messages will be received when the application is running <b>and</b> when the application is not running they will be queued and a notification displayed to the user.</p> <p>When a message arrives, the <code>MessageReceived</code> event is raised and provides the sending number and message.</p> <p> An app that includes this component will receive messages even when it is in the background (i.e. when it\"s not visible on the screen) and, moreso, even if the app is not running, so long as it\"s installed on the phone. If the phone receives a text message when the app is not in the foreground, the phone will show a notification in the notification bar.  Selecting the notification will bring up the app.  As an app developer, you\"ll probably want to give your users the ability to control ReceivingEnabled so that they can make the phone ignore text messages.</p> <p>If the GoogleVoiceEnabled property is true, messages can be sent over Wifi using Google Voice. This option requires that the user have a Google Voice account and that the mobile Voice app is installed on the phone. The Google Voice option works only on phones that support Android 2.0 (Eclair) or higher.</p> <p>To specify the phone number (e.g., 650-555-1212), set the <code>PhoneNumber</code> property to a Text string with the specified digits (e.g., 6505551212).  Dashes, dots, and parentheses may be included (e.g., (650)-555-1212) but will be ignored; spaces may not be included.</p> <p>Another way for an app to specify a phone number would be to include a <code>PhoneNumberPicker</code> component, which lets the users select a phone numbers from the ones stored in the the phone\"s contacts.</p>")
   @Description("")
   String TextingHelpStringComponentPallette();
 
@@ -5272,10 +5170,15 @@ public interface OdeMessages extends Messages {
   @Description("")
   String createNoProjectsDialogText();
 
-  @DefaultMessage("You do not have any projects in App Inventor 2. " +
+  @DefaultMessage("<p>You don\"t have any projects in App Inventor 2 yet. " +
       "To learn how to use App Inventor, click the \"Guide\" " +
-      "link at the top of the window; or to start your first project, " +
-      "click the \"Start New Project\" button at the upper left of the window.")
+      "link at the upper right of the window; or to start your first project, " +
+      "click the \"New\" button at the upper left of the window.</p>\n<p>" +
+      "<strong>Where did my projects go?</strong> " +
+      "If you had projects but now they\"re missing, " +
+      "you are probably looking for App Inventor version 1. " +
+      "It\"s still available here: " +
+      "<a href=\"http://beta.appinventor.mit.edu\" target=\"_blank\">beta.appinventor.mit.edu</a></p>\n")
   @Description("")
   String createNoProjectsDialogMessage1();
 
@@ -5294,10 +5197,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("Continue")
   @Description("")
   String createWelcomeDialogButton();
-
-  @DefaultMessage("Do Not Show Again")
-  @Description("")
-  String doNotShow();
 
   @DefaultMessage("<h2>Please fill out a short voluntary survey so that we can learn more about our users and improve MIT App Inventor.</h2>")
   @Description("")
@@ -5374,10 +5273,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String finalDialogText();
 
-  @DefaultMessage("Your Account is Disabled")
-  @Description("")
-  String accountDisabledMessage();
-
   @DefaultMessage("<p><b>Your Session is now ended, you may close this window</b></p>")
   @Description("")
   String finalDialogMessage();
@@ -5400,7 +5295,7 @@ public interface OdeMessages extends Messages {
                 "</b> has had all blocks removed. Either you removed them intentionally, or this is " +
                 "the result of a bug in our system.</p><p>" +
                 "<ul><li>Select \"OK, save the empty screen\" to continue to save the empty screen</li>" +
-                "<li>Select \"No, Do Not Save\" below to restore the previously saved version</li></ul></p>")
+                "<li>Select \"No, Don\"t Save\" below to restore the previously saved version</li></ul></p>")
   @Description("")
   String blocksTruncatedDialogMessage();
 
@@ -5408,7 +5303,7 @@ public interface OdeMessages extends Messages {
   @Description("")
   String blocksTruncatedDialogButtonSave();
 
-  @DefaultMessage("No, Do Not Save")
+  @DefaultMessage("No, Don\"t Save")
   @Description("")
   String blocksTruncatedDialogButtonNoSave();
 
@@ -5440,17 +5335,9 @@ public interface OdeMessages extends Messages {
   @Description("")
   String SwitchToSpanish();
 
-  @DefaultMessage("Français")
-  @Description("")
-  String SwitchToFrench();
-
   @DefaultMessage("Italiano")
   @Description("")
   String SwitchToItalian();
-
-  @DefaultMessage("Pусский")
-  @Description("")
-  String SwitchToRussian();
 
   @DefaultMessage("Progress Bar")
   @Description("")
@@ -5498,10 +5385,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String FusionTablesStandardErrorMessage();
 
-  @DefaultMessage("SelectionColor")
-  @Description("")
-  String SelectionColorProperties();
-
   // Missing translations from 4/8/2015 -- Should sort into appropriate place
 
   @DefaultMessage("LaunchPicker")
@@ -5511,10 +5394,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("SetDateToDisplay")
   @Description("")
   String SetDateToDisplayMethods();
-
-  @DefaultMessage("SetDateToDisplayFromInstant")
-  @Description("")
-  String SetDateToDisplayFromInstantMethods();
 
   @DefaultMessage("IncomingCallAnswered")
   @Description("")
@@ -5548,25 +5427,8 @@ public interface OdeMessages extends Messages {
   @Description("")
   String SetTimeToDisplayMethods();
 
-  @DefaultMessage("SetTimeToDisplayFromInstant")
-  @Description("")
-  String SetTimeToDisplayFromInstantMethods();
-
   @DefaultMessage("XMLTextDecode")
   @Description("")
   String XMLTextDecodeMethods();
-
-  @DefaultMessage("ExtraKey and ExtraValue are deprecated and will not be supported. " +
-      "Please use the new Extras property in Blocks.\n")
-  @Description("")
-  String extraKeyValueWarning();
-
-  @DefaultMessage("MediaStored")
-  @Description("")
-  String MediaStoredEvents();
-
-  @DefaultMessage("PostMedia")
-  @Description("")
-  String PostMediaMethods();
 
 }

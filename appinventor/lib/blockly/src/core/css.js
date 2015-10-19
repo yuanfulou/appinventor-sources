@@ -381,10 +381,7 @@ Blockly.Css.CONTENT = [
   '  fill: #ddd;',
   '  fill-opacity: .8;',
   '}',
-  '.blocklybackpackFlyoutBackground {',
-  '  fill: #ddd;',
-  '  fill-opacity: .8;',
-  '}',
+
   '.blocklyColourBackground {',
   '  fill: #666;',
   '}',

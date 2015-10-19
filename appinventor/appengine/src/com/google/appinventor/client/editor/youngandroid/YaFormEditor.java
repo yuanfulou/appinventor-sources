@@ -276,10 +276,6 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     return nonVisibleComponentsPanel;
   }
 
-  public SimpleVisibleComponentsPanel getVisibleComponentsPanel() {
-    return visibleComponentsPanel;
-  }
-
   @Override
   public boolean isScreen1() {
     return formNode.isScreen1();

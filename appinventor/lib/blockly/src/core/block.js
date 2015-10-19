@@ -34,7 +34,10 @@ goog.require('Blockly.Connection');
 goog.require('Blockly.ContextMenu');
 goog.require('Blockly.ErrorIcon');
 goog.require('Blockly.Input');
+
 goog.require('Blockly.Msg');
+//layer
+goog.require('Blockly.Layer');
 goog.require('Blockly.Mutator');
 goog.require('Blockly.Warning');
 goog.require('Blockly.WarningHandler');
@@ -139,6 +142,9 @@ Blockly.Block.prototype.fill = function(workspace, prototypeName) {
   this.inputList = [];
   this.inputsInline = false;
   this.rendered = false;
+  //layer
+  this.layerLabel = null;
+  this.layerComment = "";
   this.disabled = false;
   this.tooltip = '';
   this.contextMenu = true;
@@ -333,6 +339,21 @@ Blockly.Block.prototype.select = function() {
   Blockly.selected = this;
   this.svg_.addSelect();
   Blockly.fireUiEvent(this.workspace.getCanvas(), 'blocklySelectChange');
+  //Layer
+  //this.rendered=false
+  //this.setCollapsed(true);
+  //var xmlBlock = Blockly.Xml.blockToDom_(this);
+  //console.log("text: "+Blockly.Xml.domToPrettyText(xmlBlock));
+  /*document.getElementById("layerbox").style.position="absolute";
+  document.getElementById("layerbox").style.width="13%";
+  document.getElementById("layerbox").style.height="80%";
+  document.getElementById("layerbox").style.z-index="100";
+  document.getElementById("layerbox").style.left="85%";
+  document.getElementById("layerbox").style.top="1%";
+  document.getElementById("layerbox").style.background="#b0c4de";*/
+  //for layer debuging
+  //console.log("ID:"+this.id+" this.layerLabel:"+this.layerLabel);
+  //console.log(Blockly.haslayerbox);
 };
 
 /**
@@ -680,12 +701,6 @@ Blockly.Block.prototype.onMouseUp_ = function(e) {
       // resize to contain the newly positioned block.  Force a second resize
       // now that the block has been deleted.
       Blockly.fireUiEvent(window, 'resize');
-    } else if (this_.workspace.backpack && this_.workspace.backpack.isOpen) {
-      var backpack = this_.workspace.backpack
-	//      var xy = this.getRelativeToSurfaceXY();
-      goog.Timer.callOnce(backpack.close, 100, backpack);
-      backpack.addToBackpack(Blockly.selected);
-      Blockly.mainWorkspace.backpack.onMouseUp(e, Blockly.selected.startDragMouseX, Blockly.selected.startDragMouseY);
     }
     if (Blockly.highlightedConnection_) {
       Blockly.highlightedConnection_.unhighlight();
@@ -832,20 +847,6 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
       options.push(disableOption);
     }
 
-    // Option to copy to backpack.
-    var backpackOption = {
-      enabled:true,
-      text: Blockly.Msg.COPY_TO_BACKPACK +
-        " (" + Blockly.mainWorkspace.backpack.count() + ")",
-      callback: function() {
-        if (Blockly.selected && Blockly.selected.isDeletable() &&
-            Blockly.selected.workspace == Blockly.mainWorkspace) {
-          Blockly.mainWorkspace.backpack.addToBackpack(Blockly.selected);
-        }
-      }
-    };
-    options.push(backpackOption);
-
     // Option to delete this block.
     // Count the number of blocks that are nested in this block.
     var descendantCount = this.getDescendants().length;
@@ -873,6 +874,23 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
     block.showHelp_();
   };
   options.push(helpOption);
+  
+// Layer: Option to group block to layer.
+  var layerOption = {enabled: 1};
+  //layerOption.text = "Layer";
+  layerOption.text = Blockly.Msg.LayerAdd;
+  layerOption.callback = function(){
+    if(block.layerLabel!=null){
+      var layerName=prompt(Blockly.Msg.EnterLayerLabelPrompt,block.layerLabel);
+    }
+    else{
+      var layerName=prompt(Blockly.Msg.EnterLayerLabelPrompt, Blockly.Msg.LayerDefaultNamePrefix + (Blockly.GetLayerList().length + 1));
+    }
+    if (layerName!=null){
+      block.setLayerLabel(layerName);
+    }
+  };
+  options.push(layerOption);
 
   // Allow the block to add or modify options.
   if (this.customContextMenu && !block.isInFlyout) {
@@ -1039,10 +1057,6 @@ Blockly.Block.prototype.onMouseMove_ = function(e) {
       // Flip the trash can lid if needed.
       if (this_.workspace.trashcan && this_.isDeletable()) {
         this_.workspace.trashcan.onMouseMove(e);
-      }
-      // Flip the backpack image if needed
-      if (this_.workspace.backpack) {
-        this_.workspace.backpack.onMouseMove(e);
       }
     }
     // This event has been handled.  No need to bubble up to the document.
@@ -1582,6 +1596,39 @@ Blockly.Block.prototype.getInheritedDisabled = function() {
   }
 };
 
+/**
+ * Set LayerLabel
+ * @param {string}.
+ */
+Blockly.Block.prototype.setLayerLabel = function(layerName) {
+  //console.log("setLayerLabel to "+layerName)
+  if(layerName!=''){
+    this.layerLabel = layerName;
+  }
+  else{
+    this.layerLabel = null; 
+  }
+  this.workspace.fireChangeEvent();
+  for (var x = 0, input; input = this.inputList[x]; x++) {//?
+    if (input.connection) {
+      var child = input.connection.targetBlock();
+      if (child) child.setLayerLabel(layerName);  
+    }
+  }
+  if(Blockly.haslayerbox) Blockly.LayerBoxUpdate();
+};
+
+/**
+ * Set LayerComment
+ * @param {string}.
+ */
+ Blockly.Block.prototype.setLayerComment = function(comment) {
+  //console.log("setLayerLabel to "+layerName)
+  this.layerComment = comment;
+  this.workspace.fireChangeEvent();
+ 
+};
+ 
 /**
  * Get whether the block is collapsed or not.
  * @return {boolean} True if collapsed.

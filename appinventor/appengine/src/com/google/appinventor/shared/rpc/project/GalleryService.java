@@ -223,7 +223,7 @@ public interface GalleryService extends RemoteService {
   * @param count number to retrieve
   * @return the list of reports
   */
-  GalleryReportListResult getRecentReports(int start, int count);
+  List<GalleryAppReport> getRecentReports(int start, int count);
 
   /**
   * gets existing reports
@@ -231,7 +231,7 @@ public interface GalleryService extends RemoteService {
   * @param count number to retrieve
   * @return the list of reports
   */
-  GalleryReportListResult getAllAppReports(int start, int count);
+  List<GalleryAppReport> getAllAppReports(int start, int count);
 
   /**
   * check if an app is reported by a user
